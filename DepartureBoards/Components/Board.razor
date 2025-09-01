@@ -1,0 +1,78 @@
+﻿@using DepartureBoards.Data
+
+<style>
+    table, th, td {
+    border:1px solid black;
+    color: white;
+    }
+    th {
+    font-weight: bold;
+    border-bottom: 3px solid white;
+
+    }
+    table {
+    text-align: left; 
+    width: 400px;
+    background-color: black;
+    font-family: monospace;
+
+    }
+    th {
+    /* Thick white line below the 		header */
+    }
+
+</style>
+
+@if(Departures is not null) {
+    @if (PlatformCode is null)
+    {
+        <table>
+            <tr>
+                <th></th>
+                <th>Line</th>
+                <th>@StopName</th>
+                <th>min</th>
+            </tr>
+            @foreach (var departure in Departures)
+            {
+                <tr>
+                    <td>@departure.Stop.PlatformCode</td>
+                    <td>@departure.Route.ShortName</td>
+                    <td>@departure.Trip.Headsign</td>
+                    <td>@departure.DepartureTimestamp.Minutes</td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <table>
+            <tr>
+                <th>@PlatformCode</th>
+                <th></th>
+                <th>@StopName</th>
+                <th>min</th>
+            </tr>
+            @foreach (var departure in Departures)
+            {
+                <tr>
+                    <td>@departure.Route.ShortName</td>
+                    <td></td>
+                    <td>@departure.Trip.Headsign</td>
+                    <td>@departure.DepartureTimestamp.Minutes</td>
+                </tr>
+            }
+        </table>
+    }
+}
+
+
+
+@code {
+    [Parameter]
+    public IEnumerable<Departure> Departures { get; set; }
+    [Parameter]
+    public string StopName { get; set; }
+    [Parameter]
+    public string? PlatformCode { get; set; }
+}

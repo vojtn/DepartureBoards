@@ -1,0 +1,60 @@
+﻿@page "/home"
+@using MudBlazor
+
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+@inject IStringLocalizer<Resource> Localizer
+
+<style>
+    .center-form {
+    display: flex; /* Enables Flexbox */
+    align-items: center; /* Centers content vertically */
+    height: 80vh; /* Full viewport height */
+    }
+    .github-link {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        bottom: 0;
+    }
+</style>
+
+<MudGrid Justify="Justify.Center" Class="center-form"> 
+    <MudItem xs="12" sm="10" md="8" lg="6" xxl="6">
+        <MudCard Class="pa-5" Elevation="0">
+            <MudCardContent>
+                <MudText Typo="Typo.h3">
+                    PID Departure boards
+                </MudText>
+                <br>
+                <MudText Typo="Typo.body1">
+                     @Localizer["Intro"]
+                </MudText>
+                <br>
+                <MudButton 
+                    OnClick="HandleCreate"
+                    Variant="Variant.Outlined"
+                    FullWidth="true">
+                    @Localizer["Start"]
+                </MudButton>
+                <br>
+                <div class="github-link">
+                    <MudIconButton Icon="@Icons.Custom.Brands.GitHub" OnClick="HandleGithubLink">
+
+                    </MudIconButton>
+                </div>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+@code {
+    public void HandleCreate()
+    {
+        navigationManager.NavigateTo("/create");
+    }
+    public void HandleGithubLink()
+    {
+        navigationManager.NavigateTo("https://github.com/vojtn/DepartureBoards");
+    }
+}

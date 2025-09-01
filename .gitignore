@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/DepartureBoards/.vs/DepartureBoards/CopilotIndices
+/DepartureBoards/.vs/DepartureBoards
+/DepartureBoards/bin/
+
+/DepartureBoards/obj/
+/DepartureBoards/Properties/PublishProfiles/DepartureBoards - Web Deploy.pubxml
