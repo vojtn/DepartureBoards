@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Component\" />
     <Folder Include="Components\Pages\Board\" />
   </ItemGroup>
 

@@ -66,19 +66,29 @@
     public string Username { get; set; }
     [Parameter]
     public EventCallback<string> OnDelete { get; set; }
+    [Parameter]
+    public EventCallback<string> OnEdit { get; set; }
 
+    /// <summary>
+    /// Deletes the board from database
+    /// </summary>
+    /// <returns></returns>
     public async Task OnDeleteClicked()
     {
-        Console.WriteLine($"{StopName} deleted");
-
         if (OnDelete.HasDelegate)
         {
-            await OnDelete.InvokeAsync(StopName); // notify parent
+            await OnDelete.InvokeAsync(StopName);
         }
     }
+    /// <summary>
+    /// Edits the board
+    /// </summary>
     public void OnEditClicked()
     {
-        Console.WriteLine($"{StopName} deleted");
+        if (OnEdit.HasDelegate)
+        {
+            OnEdit.InvokeAsync(StopName);
+        }
     }
 }
  

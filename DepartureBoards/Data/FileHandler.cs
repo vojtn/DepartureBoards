@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using Microsoft.Extensions.Options;
+using System.Text.Json;
 
 namespace DepartureBoards.Data
 {
@@ -22,15 +23,41 @@ namespace DepartureBoards.Data
         /// <param name="username"></param>
         /// <param name="stopName"></param>
         public abstract void DeleteBoard(string username, string stopName);
-        public abstract void EditBoard(StopInfo stopInfo);
+        /// <summary>
+        /// Adds a favorite board (stop) for a given user if it doesn't already exist.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="stopInfo"></param>
+        public abstract void TryAddBoard(string username, StopInfo stopInfo);
+        /// <summary>
+        /// Edits an existing favorite board (stop) for a given user.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="stopInfo"></param>
+        public abstract void EditBoard(string username, StopInfo stopInfo);
     }
     public class FileHandler : DataHandler
     {
         private const string path = "./Data/data.json";
-        public override bool TryAddUser(string username)
+        private Users? ReadFile()
         {
             using FileStream openStream = File.OpenRead(path);
-            var users = JsonSerializer.Deserialize<Users>(openStream);
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<Users>(openStream, options);
+            openStream.Close();
+
+        }
+        private void Write(Users users)
+        {
+            string updatedJson = JsonSerializer.Serialize(users, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+            File.WriteAllText(path, updatedJson);
+        }
+        public override bool TryAddUser(string username)
+        {
+            Users? users = ReadFile();
             if(users is not null)
             {
                 if (users!.Contains(username))
@@ -41,20 +68,17 @@ namespace DepartureBoards.Data
                 {
                     var newUser = new User(username);
                     users.users.Add(newUser);
-                    openStream.Close();
-                    string jsonString = JsonSerializer.Serialize(users);
-                    File.WriteAllText(path, jsonString);
+                    Write(users);
                     return true;
                 }
             }
             return false;
         }
+
         public override User? GetUser(string username)
         {
-            using FileStream openStream = File.OpenRead(path);
-            var users = JsonSerializer.Deserialize<Users>(openStream);
-            openStream.Close();
-            if(users is null)
+            Users? users = ReadFile();
+            if (users is null)
             {
                 return null;
             }
@@ -63,11 +87,8 @@ namespace DepartureBoards.Data
 
         public override void DeleteBoard(string username, string stopName)
         {
-            string json = File.ReadAllText(path);
-
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var users = JsonSerializer.Deserialize<Users>(json, options);
-            if(users is null)
+            Users? users = ReadFile();
+            if (users is null)
             {
                 return;
             }
@@ -83,16 +104,56 @@ namespace DepartureBoards.Data
             {
                 Console.WriteLine("User not found.");
             }
-            string updatedJson = JsonSerializer.Serialize(users, new JsonSerializerOptions
-            {
-                WriteIndented = true
-            });
-            File.WriteAllText(path, updatedJson);
+            Write(users);
         }
 
-        public override void EditBoard(StopInfo stopInfo)
+        public override void TryAddBoard(string username, StopInfo favorite)
         {
-            throw new NotImplementedException();
+            Users? users = ReadFile();
+
+            if (users is not null)
+            {
+                var user = users.GetUser(username);
+                if (user != null)
+                {
+                    // Check for duplicates before adding
+                    bool alreadyExists = user.Favorites.Any(f => f.Name == favorite.Name);
+                    if (!alreadyExists)
+                        user.Favorites.Add(favorite);
+                    Write(users);
+                }
+                else
+                {
+                    Console.WriteLine("User not found.");
+                }
+            }
+        }
+        public override void EditBoard(string username, StopInfo stopInfo)
+        {
+            Users? users = ReadFile();
+
+            if (users is not null)
+            {
+                var user = users.GetUser(username);
+                if (user != null)
+                {
+                    var existingBoard = user.Favorites.FirstOrDefault(f => f.Name == stopInfo.Name);
+                    if (existingBoard != null)
+                    {
+                        // Update the existing board's platforms
+                        existingBoard.Platforms = stopInfo.Platforms;
+                        Write(users);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Board not found.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("User not found.");
+                }
+            }
         }
     }
 }
