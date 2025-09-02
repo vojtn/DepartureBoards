@@ -2,9 +2,12 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/DepartureBoards/.vs/DepartureBoards/CopilotIndices
-/DepartureBoards/.vs/DepartureBoards
+
+/DepartureBoards/.vs/
 /DepartureBoards/bin/
 
 /DepartureBoards/obj/
-/DepartureBoards/Properties/PublishProfiles/DepartureBoards - Web Deploy.pubxml
+/DepartureBoards/Properties/PublishProfiles/
+/DepartureBoards/.vs/ProjectEvaluation/departureboards.strings.v9.bin
+/DepartureBoards/appsettings.Development.json
+/DepartureBoards/appsettings.json

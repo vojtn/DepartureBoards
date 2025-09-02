@@ -2,57 +2,81 @@
 
 namespace DepartureBoards.Data
 {
-    public static class FileHandler
+    public abstract class DataHandler
     {
-        const string path = "./Data/data.json";
-
-        public static void CreateFile(string path)
-        {
-
-        }
-
-        public static bool AddUser(string username)
-        {
-            using FileStream openStream = File.OpenRead(path);
-            var people = JsonSerializer.Deserialize<People>(openStream);
-            // TODO: people fix null
-            if (people.Contains(username))
-            {
-                // show sth
-                return false;
-            }
-            else
-            {
-                var newPerson = new Person();
-                newPerson.Name = username;
-                people.users.Add(newPerson);
-                string jsonString = JsonSerializer.Serialize(people);
-                openStream.Close();
-                File.WriteAllText(path, jsonString);
-                return true;
-            }
-        }
-        public static Person? getUser(string username)
+        /// <summary>
+        /// Adds a new user to the data storage. Returns false if the username already exists
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public abstract bool TryAddUser(string username);
+        /// <summary>
+        /// Retrieves a user by their username.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public abstract User? GetUser(string username);
+        /// <summary>
+        /// Deletes a favorite board (stop) for a given user.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="stopName"></param>
+        public abstract void DeleteBoard(string username, string stopName);
+        public abstract void EditBoard(StopInfo stopInfo);
+    }
+    public class FileHandler : DataHandler
+    {
+        private const string path = "./Data/data.json";
+        public override bool TryAddUser(string username)
         {
             using FileStream openStream = File.OpenRead(path);
-            var people = JsonSerializer.Deserialize<People>(openStream);
+            var users = JsonSerializer.Deserialize<Users>(openStream);
+            if(users is not null)
+            {
+                if (users!.Contains(username))
+                {
+                    return false;
+                }
+                else
+                {
+                    var newUser = new User(username);
+                    users.users.Add(newUser);
+                    openStream.Close();
+                    string jsonString = JsonSerializer.Serialize(users);
+                    File.WriteAllText(path, jsonString);
+                    return true;
+                }
+            }
+            return false;
+        }
+        public override User? GetUser(string username)
+        {
+            using FileStream openStream = File.OpenRead(path);
+            var users = JsonSerializer.Deserialize<Users>(openStream);
             openStream.Close();
-            return people.GetUser(username);
+            if(users is null)
+            {
+                return null;
+            }
+            return users!.GetUser(username);
         }
 
-        public static void DeleteBoard(string username, string stopName)
+        public override void DeleteBoard(string username, string stopName)
         {
             string json = File.ReadAllText(path);
 
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var users = JsonSerializer.Deserialize<People>(json, options);
-
+            var users = JsonSerializer.Deserialize<Users>(json, options);
+            if(users is null)
+            {
+                return;
+            }
             var user = users.GetUser(username);
             if (user != null)
             {
                 if (user.Favorites != null)
                 {
-                    user.DeleteStop(stopName);
+                    user.RemoveStop(stopName);
                 }
             }
             else
@@ -64,6 +88,11 @@ namespace DepartureBoards.Data
                 WriteIndented = true
             });
             File.WriteAllText(path, updatedJson);
+        }
+
+        public override void EditBoard(StopInfo stopInfo)
+        {
+            throw new NotImplementedException();
         }
     }
 }
