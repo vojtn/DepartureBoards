@@ -117,10 +117,55 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddBoard" xml:space="preserve">
+    <value>Přidat označník</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Zavřít</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Potvrdit</value>
+  </data>
+  <data name="CreateUser" xml:space="preserve">
+    <value>Vytvořit</value>
+  </data>
+  <data name="EnterUsername" xml:space="preserve">
+    <value>Zadejte uživatelské jméno</value>
+  </data>
   <data name="Intro" xml:space="preserve">
-    <value>PID Označník je Blazor webová aplikace využívající PID OpedAPI k zobrazování vlastních označníků pro Prahu a okolí. Uživatel může vybrat oblíbené zastávky a platformy pro lepší přehled. </value>
+    <value>PID Označník je Blazor webová aplikace využívající PID OpenAPI k zobrazování vlastních označníků pro Prahu a okolí. Uživatel může vybrat oblíbené zastávky a platformy pro lepší přehled. </value>
+  </data>
+  <data name="NoBoardMessage" xml:space="preserve">
+    <value>Nemáte žádnou oblíbenou zastávku!</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Platforma</value>
+  </data>
+  <data name="ProjectName" xml:space="preserve">
+    <value>PID Označník</value>
+  </data>
+  <data name="RegisterAccount" xml:space="preserve">
+    <value>Registrovat uživatele</value>
+  </data>
+  <data name="RequiredField" xml:space="preserve">
+    <value>Toto pole je povinné!</value>
+  </data>
+  <data name="SelectFavoriteStop" xml:space="preserve">
+    <value>Vyberte oblíbenou zastávku</value>
+  </data>
+  <data name="SelectPlatform" xml:space="preserve">
+    <value>Vyberte platformu</value>
   </data>
   <data name="Start" xml:space="preserve">
     <value>Začít</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>Zastávka</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Uživatelské jméno</value>
+  </data>
+  <data name="UsernameAlreadyExists" xml:space="preserve">
+    <value>Uživatelské jméno je již zabrané!</value>
   </data>
 </root>

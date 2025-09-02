@@ -117,13 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddBoard" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value />
+  </data>
   <data name="CreateUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EnterUsername" xml:space="preserve">
     <value />
   </data>
   <data name="Intro" xml:space="preserve">
     <value />
   </data>
+  <data name="NoBoardMessage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ProjectName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegisterAccount" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredField" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SelectFavoriteStop" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SelectPlatform" xml:space="preserve">
+    <value />
+  </data>
   <data name="Start" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Username" xml:space="preserve">
     <value />
   </data>
   <data name="UsernameAlreadyExists" xml:space="preserve">

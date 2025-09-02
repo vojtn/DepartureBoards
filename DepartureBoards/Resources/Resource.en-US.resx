@@ -117,11 +117,56 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddBoard" xml:space="preserve">
+    <value>Add board</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="CreateUser" xml:space="preserve">
+    <value>Create account</value>
+  </data>
+  <data name="EnterUsername" xml:space="preserve">
+    <value>Enter username</value>
+  </data>
   <data name="Intro" xml:space="preserve">
     <value>DepartureBoards is a Blazor web app that uses the PID Open API to display customized public transport departure boards for Prague. Users can select and manage their favorite stops and platforms for quick access.
 </value>
   </data>
+  <data name="NoBoardMessage" xml:space="preserve">
+    <value>You dont have any favorite stop!</value>
+  </data>
+  <data name="Platform" xml:space="preserve">
+    <value>Platform</value>
+  </data>
+  <data name="ProjectName" xml:space="preserve">
+    <value>PID Departure boards</value>
+  </data>
+  <data name="RegisterAccount" xml:space="preserve">
+    <value>Register account</value>
+  </data>
+  <data name="RequiredField" xml:space="preserve">
+    <value>This field is required!</value>
+  </data>
+  <data name="SelectFavoriteStop" xml:space="preserve">
+    <value>Choose favorite stop</value>
+  </data>
+  <data name="SelectPlatform" xml:space="preserve">
+    <value>Choose the platform</value>
+  </data>
   <data name="Start" xml:space="preserve">
     <value>Start</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="UsernameAlreadyExists" xml:space="preserve">
+    <value>Username already exists</value>
   </data>
 </root>

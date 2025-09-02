@@ -1,10 +1,11 @@
 ﻿@page "/create"
+
 @rendermode InteractiveServer
 @inject NavigationManager navigationManager
 @inject IStringLocalizer<Resource> Localizer
+@inject DataHandler DataHandler
 
-@using MudBlazor
-@using Data
+
 <MudPopoverProvider />
 
 <style>
@@ -19,21 +20,22 @@
     <MudItem xs="12" sm="6" md="6" lg="6" xxl="6">
         <MudCard Class="pa-5" Elevation="0">
             <MudCardContent>
-                <MudText >
-                    @Localizer["EnterUsername"]
+                <MudText Typo="Typo.h3" 
+                         Align="Align.Center">
+                    @Localizer["RegisterAccount"]
                 </MudText>
-                <MudTextField 
-                    T="String" 
-                    @bind-Value="username"
-                    Label="@Localizer["Username"]"
-                    Variant="Variant.Outlined" 
-                    Margin="Margin.Dense">
-                </MudTextField>
-                <MudButton 
-                    OnClick="CreateUser" 
-                    Color="Color.Primary" 
-                    Variant="Variant.Outlined" 
-                    FullWidth="true">
+                <br>
+                <MudTextField T="String"
+                              @bind-Value="username"
+                              Label="@Localizer["Username"]"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Required="true"
+                              RequiredError="@Localizer["RequiredField"]"/>
+                <MudButton OnClick="CreateUser"
+                           Color="Color.Primary"
+                           Variant="Variant.Outlined"
+                           FullWidth="true">
                     @Localizer["CreateUser"]
                 </MudButton>
             </MudCardContent>
@@ -42,24 +44,28 @@
 </MudGrid>
 <MudPopover Open="_open" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter">
     <MudText>@Localizer["UsernameAlreadyExists"]</MudText>
-    <MudButton OnClick="(() => _open = false)" Color="Color.Error">Close</MudButton>
+    <MudButton OnClick="(() => _open = false)" Color="Color.Error">
+        @Localizer["Close"]
+     </MudButton>
 
 </MudPopover>
 @code {
     private string? username { get; set; }
     private bool _open = false;
+    /// <summary>
+    /// Tries to create a user with the given username.
+    /// If successful, navigates to the user's page.
+    /// Otherwise, opens a popover indicating the username already exists.
+    /// </summary>
     private void CreateUser(){
         if(username is not null) {
-            bool created = FileHandler.AddUser(username);
+            bool created = DataHandler.TryAddUser(username);
             if(created){
                 navigationManager.NavigateTo($"/{username}");
             }
             else {
                 _open = true;
             }
-        }
-        else {
-            Console.WriteLine("a");
         }
     }
     private void ToggleOpen() => _open = !_open;
