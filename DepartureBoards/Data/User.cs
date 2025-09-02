@@ -7,9 +7,9 @@
     {
         public string Name { get; set; } = String.Empty;
         public List<StopInfo> Favorites { get; set; } = new();
-        public User(string username) 
+        public User(string Name) 
         {
-            Name = username;
+            this.Name = Name;
         }
         /// <summary>
         /// Remomes a stop from the favorites list by its name.
