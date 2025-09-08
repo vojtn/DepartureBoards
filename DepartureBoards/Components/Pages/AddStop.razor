@@ -120,27 +120,26 @@
         }
     }
     /// <summary>
-    /// 
+    /// Searches stop groups based on the input value.
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    private Task<IEnumerable<Group>> SearchStopGroups(string value, CancellationToken token)
+    /// <param name="value">The search input value.</param>
+    /// <param name="token">The cancellation token.</param>
+    /// <returns>An IEnumerable of matching groups.</returns>
+    private Task<IEnumerable<Group?>> SearchStopGroups(string value, CancellationToken token)
     {
+        // empty input
         if (string.IsNullOrWhiteSpace(value))
-            return Task.FromResult(stops!.Groups.Take(20));
-        var normalizedInput = RemoveDiacritics(value).ToLowerInvariant();
+            return Task.FromResult<IEnumerable<Group?>>(stops!.Groups.Take(20));
 
+        var normalizedInput = RemoveDiacritics(value).ToLowerInvariant();
         var result = stops!.Groups
             .Where(x => RemoveDiacritics(x.Name)
             .ToLowerInvariant()
-            .StartsWith(normalizedInput))
+            .Contains(normalizedInput))
             .Take(20);
 
-        return Task.FromResult(result);
+        return Task.FromResult<IEnumerable<Group?>>(result);
     }
-
-    /// <summary>
     /// Remove diactitics for better autocomplete
     /// </summary>
     /// <param name="text"></param>
