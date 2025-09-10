@@ -5,7 +5,6 @@
 @inject IStringLocalizer<Resource> Localizer
 @inject DataHandler DataHandler
 
-
 <MudPopoverProvider />
 
 <style>
@@ -20,22 +19,22 @@
     <MudItem xs="12" sm="6" md="6" lg="6" xxl="6">
         <MudCard Class="pa-5" Elevation="0">
             <MudCardContent>
-                <MudText Typo="Typo.h3" 
-                         Align="Align.Center">
+                <MudText Typo="Typo.h4" 
+                Align="Align.Center">
                     @Localizer["RegisterAccount"]
                 </MudText>
                 <br>
                 <MudTextField T="String"
-                              @bind-Value="username"
-                              Label="@Localizer["Username"]"
-                              Variant="Variant.Outlined"
-                              Margin="Margin.Dense"
-                              Required="true"
-                              RequiredError="@Localizer["RequiredField"]"/>
+                @bind-Value="username"
+                Label="@Localizer["Username"]"
+                Variant="Variant.Outlined"
+                Margin="Margin.Dense"
+                Required="true"
+                RequiredError="@Localizer["RequiredField"]"/>
                 <MudButton OnClick="CreateUser"
-                           Color="Color.Primary"
-                           Variant="Variant.Outlined"
-                           FullWidth="true">
+                Color="Color.Primary"
+                Variant="Variant.Outlined"
+                FullWidth="true">
                     @Localizer["CreateUser"]
                 </MudButton>
             </MudCardContent>
@@ -43,10 +42,13 @@
     </MudItem>
 </MudGrid>
 <MudPopover Open="_open" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter">
-    <MudText>@Localizer["UsernameAlreadyExists"]</MudText>
-    <MudButton OnClick="(() => _open = false)" Color="Color.Error">
-        @Localizer["Close"]
-     </MudButton>
+    <MudCard Class="p-5" Elevation="1">
+        <MudText>@Localizer["UsernameAlreadyExists"]</MudText>
+        <br />
+        <MudButton OnClick="(() => _open = false)" Color="Color.Error">
+            @Localizer["Close"]
+        </MudButton>
+    </MudCard>
 
 </MudPopover>
 @code {
@@ -65,6 +67,7 @@
             }
             else {
                 _open = true;
+                username = String.Empty;
             }
         }
     }
