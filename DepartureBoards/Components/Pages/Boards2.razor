@@ -7,9 +7,9 @@
 @using MudBlazor
 @using Data
 
-@page "/v2/{Username?}"
+@page "/{Username?}"
 
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject NavigationManager navigationManager
 @inject IStringLocalizer<Resource> Localizer
 @inject DataHandler DataHandler
@@ -19,10 +19,10 @@
 <PageTitle>Boards</PageTitle>
 
 
-<MudGrid Justify="Justify.Center"> 
+<MudGrid Justify="Justify.Center" Class="pt-5"> 
     <MudItem xs="12" sm="10" md="8" lg="6" xxl="6">
-        <MudCard Class="pa-5" Elevation="0">
-            <MudCardContent>
+        <MudCard Class="p-0" Elevation="0">
+            <MudCardContent Class="py-5">
                 @if(boards.Count == 0)
                 {
                     <MudText Typo="Typo.body1">
@@ -31,8 +31,8 @@
                 }
                 @foreach(var board in boards) {
                     if (board.Key.Platforms.Count == 0) {
-                        <div class="container">
-                            <MudBoard Departures=@board.Value StopName=@board.Key.Name OnDelete="@RemoveBoard" OnEdit="@EditBoard"></MudBoard>
+                        <div class="board pa-0">
+                            <MudBoard Departures=@board.Value StopName=@board.Key.Name OnDelete="@RemoveBoard" OnEdit="@EditBoard"/>
                         </div>
                     }
                     else {
@@ -40,10 +40,10 @@
                         foreach (var group in grouped)
                         {
                             if(board.Key.Platforms.Contains(group.Key)){
-                                <div class="container">
+                                <div class="board p-0">
                                     <MudBoard Departures=@group StopName=@board.Key.Name PlatformCode=@group.Key OnDelete="@RemoveBoard" OnEdit="@EditBoard"></MudBoard>
                                 </div>
-                                <br>
+                                @* <br> *@
                             }
                         }
                     }
@@ -52,6 +52,7 @@
                 <MudButton 
                     OnClick="AddNewBoard"
                     Variant="Variant.Outlined"
+                    Color="Color.Primary"
                     FullWidth="true">
                     @Localizer["AddBoard"]
                 </MudButton>
@@ -66,22 +67,12 @@
     private Timer? refreshTimer;
     Dictionary<StopInfo, List<Departure>> boards = new();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         if(Username is null) {
             navigationManager.NavigateTo("/home");
         }
-        User? user = DataHandler.GetUser(Username!);
-        if(user is not null && user.Favorites is not null){
-            /// For each favorite, get the departure board and add it to the dictionary.
-            foreach (var stop in user.Favorites)
-            {
-                List<Departure>? departures = await ApiHandler.GetDepartureBoard(stop.Name);
-                if(departures is not null)
-                    boards.Add(stop, departures);
-            }
-        }
-        refreshTimer = new Timer(RefreshData, null, 0, 30000);
+        refreshTimer = new Timer(RefreshData, null, 0, 15000);
     }
     /// <summary>
     /// Reshuffles the data every 30 seconds.
@@ -89,6 +80,21 @@
     /// <param name="state"></param>
     private async void RefreshData(object? state)
     {
+        if (Username is null) return;
+
+        User? user = DataHandler.GetUser(Username!);
+        if (user is not null && user.Favorites is not null)
+        {
+            /// For each favorite stop, get the departure board and add it to the dictionary.
+            var updatedBoards = new Dictionary<StopInfo, List<Departure>>();
+            foreach (var stop in user.Favorites)
+            {
+                List<Departure>? departures = await ApiHandler.GetDepartureBoard(stop.Name);
+                if (departures is not null)
+                    updatedBoards.Add(stop, departures);
+            }
+            boards = updatedBoards;
+        }
         await InvokeAsync(StateHasChanged);
     }
     /// <summary>
