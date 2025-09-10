@@ -10,13 +10,13 @@
 
 <style>
     .center-form {
-        display: flex; /* Enables Flexbox */
-        align-items: center; /* Centers content vertically */
-        height: 80vh; /* Full viewport height */
+    display: flex; /* Enables Flexbox */
+    align-items: center; /* Centers content vertically */
+    height: 80vh; /* Full viewport height */
     }
     .center {
-        display: flex;
-        justify-content: center;
+    display: flex;
+    justify-content: center;
     }
 
 </style>
@@ -25,7 +25,7 @@
     <MudItem xs="12" sm="6" md="6" lg="4" xxl="2">
         <MudCard Class="pa-5" Elevation="0">
             <MudCardContent>
-                <MudText>
+                <MudText Typo="Typo.h5">
                     @Localizer["SelectFavoriteStop"]
                 </MudText>
                 @if(loading)
@@ -37,38 +37,39 @@
                 else
                 {
                     <MudAutocomplete T="Group"
-                                     Label="@Localizer["Stop"]"
-                                     @bind-Value="selectedGroup"
-                                     SearchFunc="SearchStopGroups"
-                                     ToStringFunc="s => s == null ? string.Empty : s.ToString()"
-                                     Clearable="true"
-                                     Dense="true"
-                                     DebounceInterval="200"
-                                     MinCharacters="0"
-                                     MaxItems="20"
-                                     Variant="Variant.Outlined"
-                                     ShowProgressIndicator="true"
-                                     Required="true"
-                                     RequiredError="@Localizer["RequiredField"]" />
+                    Label="@Localizer["Stop"]"
+                    @bind-Value="selectedGroup"
+                    SearchFunc="SearchStopGroups"
+                    ToStringFunc="s => s == null ? string.Empty : s.ToString()"
+                    Clearable="true"
+                    Dense="true"
+                    DebounceInterval="200"
+                    MinCharacters="0"
+                    MaxItems="20"
+                    Variant="Variant.Outlined"
+                    ShowProgressIndicator="true"
+                    ProgressIndicatorColor="Color.Default"
+                    Required="true"
+                    RequiredError="@Localizer["RequiredField"]" />
                     @if (selectedGroup is not null)
                     {
                         <br>
                         <div class="center">
                             <MudSwitch @bind-Value="platformSwitch"
                                        Color="Color.Primary"
-                                       Label="@Localizer["SelectPlatform"]" />
+                                       Label="@Localizer["SelectPlatforms"]" />
                         </div>
 
                         @if (platformSwitch)
                         {
                             <br>
                             <MudSelect T="string"
-                                       MultiSelection="true"
-                                       @bind-SelectedValues="selectedPlatforms"
-                                       Clearable="true"
-                                       Dense="true"
-                                       Label="@Localizer["Platform"]"
-                                       Variant="Variant.Outlined">
+                            MultiSelection="true"
+                            @bind-SelectedValues="selectedPlatforms"
+                            Clearable="true"
+                            Dense="true"
+                            Label="@Localizer["Platform"]"
+                            Variant="Variant.Outlined">
                                 @foreach (var stop in selectedGroup.Stops)
                                 {
                                     <MudSelectItem T="string" Value="@stop.Platform">
@@ -81,9 +82,9 @@
                 }
                 <br>
                 <MudButton
-                    OnClick="HandleConfirm"
-                    Variant="Variant.Outlined"
-                    FullWidth="true">
+                OnClick="HandleConfirm"
+                Variant="Variant.Outlined"
+                FullWidth="true">
                     @Localizer["Confirm"]
                 </MudButton>
             </MudCardContent>
@@ -168,15 +169,22 @@
     /// </summary>
     private void HandleConfirm()
     {
-        StopInfo newFavorite = new StopInfo
+        if (selectedGroup is not null)
+        {
+            StopInfo newFavorite = new StopInfo
+                {
+                    Name = selectedGroup!.Name,
+                    Platforms = selectedPlatforms.ToList()
+                };
+            if (Stop is null)
             {
-                Name = selectedGroup!.Name,
-                Platforms = selectedPlatforms.ToList()
-            };
-        if (Stop is null)
-            DataHandler.TryAddBoard(Username, newFavorite);
-        else
-            DataHandler.EditBoard(Username, newFavorite);
-        navigationManager.NavigateTo($"/v2/{Username}");
+                DataHandler.TryAddBoard(Username, newFavorite);
+            }
+            else
+            {
+                DataHandler.EditBoard(Username, newFavorite);
+            }
+            navigationManager.NavigateTo($"/{Username}");
+        }
     }
 }

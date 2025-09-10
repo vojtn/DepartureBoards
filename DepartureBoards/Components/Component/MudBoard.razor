@@ -1,54 +1,59 @@
 ﻿@using DepartureBoards.Data
 @using MudBlazor
-
+@inject IStringLocalizer<Resource> Localizer
 <style>
     .my-column-limit {
-        max-width: 50px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+    max-width: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     }
 </style>
 
-<div style="overflow-x:auto;">
+<div style="overflow-x: auto;">
     <MudDataGrid Items="Departures"
-                 Dense="true"
-                 Striped="true"
-                 Bordered="true"
-                 Elevation="0"
-                 Square="true"
-                 Outlined="true"
-                 SortMode="SortMode.Single"
-                 Breakpoint="Breakpoint.None">
+    Dense="true"
+    Striped="true"
+    Bordered="true"
+    Elevation="0"
+    Square="true"
+    Outlined="true"
+    SortMode="SortMode.Single"
+    Breakpoint="Breakpoint.None">
         @*     <ToolBarContent>
             <MudText>@StopName</MudText>
         </ToolBarContent> *@
         <ToolBarContent>
-            <MudText Typo="Typo.h6">@StopName</MudText>
+            @if(PlatformCode is null){
+                <MudText Typo="Typo.h6">@StopName</MudText>
+            }
+            else{
+                <MudText Typo="Typo.h6">@StopName - @* @Localizer["Platform"] *@ @PlatformCode</MudText>
+            }
             <MudSpacer />
             <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                Color="Color.Primary"
-                Size="Size.Small"
-                OnClick="OnEditClicked" />
+            Color="Color.Primary"
+            Size="Size.Small"
+            OnClick="OnEditClicked" />
             <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                Color="Color.Error"
-                Size="Size.Small"
-                OnClick="OnDeleteClicked"/>
+            Color="Color.Error"
+            Size="Size.Small"
+            OnClick="OnDeleteClicked"/>
 
         </ToolBarContent>
         <Columns>
             @if (PlatformCode is null)
             {
-                <PropertyColumn Title="" Property="departure => departure.Stop.PlatformCode" Sortable="true" Style="max-width: 50px;"></PropertyColumn>
-                <PropertyColumn Title="Line" Property="departure => departure.Route.ShortName" Sortable="false"></PropertyColumn>
+                <PropertyColumn Title="" Property="departure => departure.Stop.PlatformCode" Sortable="true"></PropertyColumn>
+                <PropertyColumn Title="Line" Property="departure => departure.Route.ShortName" Sortable="false" Style="width: 30px;"></PropertyColumn>
                 <PropertyColumn Title="Direction" Property="departure => departure.Trip.Headsign" Sortable="false"></PropertyColumn>
-                <PropertyColumn Title="Min" Property="departure => departure.DepartureTimestamp.Minutes" Sortable="true" CellClass="my-column-limit"></PropertyColumn>
+                <PropertyColumn Title="Min" Property="departure => departure.DepartureTimestamp.Minutes" Sortable="false" CellClass="my-column-limit"></PropertyColumn>
             }
             else
             {
-                <PropertyColumn Title="@PlatformCode" Property="departure => departure.Route.ShortName" Sortable="false"></PropertyColumn>
+                <PropertyColumn Title="@PlatformCode" Property="departure => departure.Route.ShortName" Sortable="false" CellStyle="max-width: 25px;"></PropertyColumn>
                 <PropertyColumn Title="Direction" Property="departure => departure.Trip.Headsign" Sortable="false"></PropertyColumn>
-                <PropertyColumn Title="Min" Property="departure => departure.DepartureTimestamp.Minutes" Sortable="true" Style="max-width: 50px;"></PropertyColumn>
+                <PropertyColumn Title="Min" Property="departure => departure.DepartureTimestamp.Minutes" Sortable="false" CellStyle="max-width: 50px;"></PropertyColumn>
             }
 
         </Columns>

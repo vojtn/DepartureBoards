@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using System.Globalization;
 using System.Text.Json;
 
 namespace DepartureBoards.Data
@@ -17,6 +18,11 @@ namespace DepartureBoards.Data
         /// <param name="username"></param>
         /// <returns></returns>
         public abstract User? GetUser(string username);
+        /// <summary>
+        /// Retrieves all users from the data storage.
+        /// </summary>
+        /// <returns></returns>
+        public abstract List<User> GetAllUsers();
         /// <summary>
         /// Deletes a favorite board (stop) for a given user.
         /// </summary>
@@ -44,11 +50,26 @@ namespace DepartureBoards.Data
             using FileStream openStream = File.OpenRead(path);
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             return JsonSerializer.Deserialize<Users>(openStream, options);
-            openStream.Close();
-
         }
         private void Write(Users users)
         {
+            foreach (var user in users.users)
+            {
+                if (user.Favorites is not null)
+                {
+                    foreach (var stop in user.Favorites)
+                    {
+                        for (int i = 0; i < stop.Platforms.Count; i++)
+                        {
+                            var platform = stop.Platforms[i];
+                            if (platform == "M1")
+                                stop.Platforms[i] = "1";
+                            if (platform == "M2")
+                                stop.Platforms[i] = "2";
+                        }
+                    }
+                }
+            }
             string updatedJson = JsonSerializer.Serialize(users, new JsonSerializerOptions
             {
                 WriteIndented = true
@@ -84,6 +105,13 @@ namespace DepartureBoards.Data
             }
             return users!.GetUser(username);
         }
+        public override List<User> GetAllUsers()
+        {
+            using FileStream openStream = File.OpenRead(path);
+            var people = JsonSerializer.Deserialize<Users>(openStream);
+            openStream.Close();
+            return people?.users ?? new List<User>();
+        }
 
         public override void DeleteBoard(string username, string stopName)
         {
@@ -116,10 +144,15 @@ namespace DepartureBoards.Data
                 var user = users.GetUser(username);
                 if (user != null)
                 {
-                    // Check for duplicates before adding
-                    bool alreadyExists = user.Favorites.Any(f => f.Name == favorite.Name);
+                    bool alreadyExists = false;
+                    if (user.Favorites is not null)
+                    {
+                        // Check for duplicates before adding
+                        alreadyExists = user.Favorites.Any(f => f.Name == favorite.Name);  
+                    }
                     if (!alreadyExists)
                         user.Favorites.Add(favorite);
+
                     Write(users);
                 }
                 else

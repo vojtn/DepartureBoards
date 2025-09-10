@@ -31,23 +31,23 @@
     public class Users
     {
         public List<User> users { get; set; } = new();
-        /// <summary>
-        /// Checks if a user with the given username exists in the users list.
-        /// </summary>
-        /// <param name="username"></param>
-        /// <returns></returns>
+        /// <summary>  
+        /// Checks if a user with the given username exists in the users list (case-insensitive).  
+        /// </summary>  
+        /// <param name="username"></param>  
+        /// <returns></returns>  
         public bool Contains(string username)
         {
-            return users.Any(user => user.Name == username);
+            return users.Any(user => string.Equals(user.Name, username, StringComparison.OrdinalIgnoreCase));
         }
         /// <summary>
-        /// Retrieves a user by their username.
+        /// Retrieves a user by their username (case-insensitive).
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
         public User? GetUser(string username)
         {
-            return users.FirstOrDefault(user => user.Name == username);
+            return users.FirstOrDefault(user => string.Equals(user.Name, username, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
