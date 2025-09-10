@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccountCreatedMessage" xml:space="preserve">
+    <value>Have you already created an account? Just enter your username and you will be redirected to your page.</value>
+  </data>
   <data name="AddBoard" xml:space="preserve">
     <value>Add board</value>
+  </data>
+  <data name="SelectAllPlatforms" xml:space="preserve">
+    <value>Select all platforms</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>Close</value>
@@ -133,7 +139,7 @@
     <value>Enter username</value>
   </data>
   <data name="Intro" xml:space="preserve">
-    <value>DepartureBoards is a Blazor web app that uses the PID Open API to display customized public transport departure boards for Prague. Users can select and manage their favorite stops and platforms for quick access.
+    <value>DepartureBoard is a web app that uses the PID OpenAPI to display customized public transport departure boards for Prague metropolian area. Users can choose and manage their favorite stops and platforms.
 </value>
   </data>
   <data name="NoBoardMessage" xml:space="preserve">
@@ -143,7 +149,10 @@
     <value>Platform</value>
   </data>
   <data name="ProjectName" xml:space="preserve">
-    <value>PID Departure boards</value>
+    <value>PID Departure board</value>
+  </data>
+  <data name="Redirect" xml:space="preserve">
+    <value>Redirect</value>
   </data>
   <data name="RegisterAccount" xml:space="preserve">
     <value>Register account</value>
@@ -152,10 +161,13 @@
     <value>This field is required!</value>
   </data>
   <data name="SelectFavoriteStop" xml:space="preserve">
-    <value>Choose favorite stop</value>
+    <value>Select your favorite stop</value>
   </data>
-  <data name="SelectPlatform" xml:space="preserve">
-    <value>Choose the platform</value>
+  <data name="SelectPlatforms" xml:space="preserve">
+    <value>Select platforms</value>
+  </data>
+  <data name="SelectSpecificPlatforms" xml:space="preserve">
+    <value>Select specific platforms</value>
   </data>
   <data name="Start" xml:space="preserve">
     <value>Start</value>

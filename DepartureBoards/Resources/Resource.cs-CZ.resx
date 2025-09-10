@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccountCreatedMessage" xml:space="preserve">
+    <value>Máte už vytvořený účet? Zadejte své přihlašovací jméno a budete přesměrováni na svou stránku.</value>
+  </data>
   <data name="AddBoard" xml:space="preserve">
     <value>Přidat označník</value>
+  </data>
+  <data name="SelectAllPlatforms" xml:space="preserve">
+    <value>Vybrat všechny stanoviště</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>Zavřít</value>
@@ -133,16 +139,19 @@
     <value>Zadejte uživatelské jméno</value>
   </data>
   <data name="Intro" xml:space="preserve">
-    <value>PID Označník je Blazor webová aplikace využívající PID OpenAPI k zobrazování vlastních označníků pro Prahu a okolí. Uživatel může vybrat oblíbené zastávky a platformy pro lepší přehled. </value>
+    <value>PID Označník je webová aplikace využívající PID OpenAPI k zobrazování vlastních označníků pro Prahu a okolí. Uživatelé si mohou vybrat své oblíbené zastávky a stanoviště.</value>
   </data>
   <data name="NoBoardMessage" xml:space="preserve">
     <value>Nemáte žádnou oblíbenou zastávku!</value>
   </data>
   <data name="Platform" xml:space="preserve">
-    <value>Platforma</value>
+    <value>Stanoviště</value>
   </data>
   <data name="ProjectName" xml:space="preserve">
     <value>PID Označník</value>
+  </data>
+  <data name="Redirect" xml:space="preserve">
+    <value>Přejít</value>
   </data>
   <data name="RegisterAccount" xml:space="preserve">
     <value>Registrovat uživatele</value>
@@ -153,8 +162,11 @@
   <data name="SelectFavoriteStop" xml:space="preserve">
     <value>Vyberte oblíbenou zastávku</value>
   </data>
-  <data name="SelectPlatform" xml:space="preserve">
-    <value>Vyberte platformu</value>
+  <data name="SelectPlatforms" xml:space="preserve">
+    <value>Vybrat stanoviště</value>
+  </data>
+  <data name="SelectSpecificPlatforms" xml:space="preserve">
+    <value>Vybrat konkrétní stanoviště</value>
   </data>
   <data name="Start" xml:space="preserve">
     <value>Začít</value>
