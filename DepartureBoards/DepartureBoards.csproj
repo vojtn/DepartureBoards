@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BitzArt.Blazor.Cookies.Server" Version="1.5.0" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.8" />
     <PackageReference Include="MudBlazor" Version="8.9.0" />
   </ItemGroup>
@@ -19,6 +20,10 @@
     <Content Update="Components\Pages\Boards2.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Update="Data\data.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
 
   <ItemGroup>

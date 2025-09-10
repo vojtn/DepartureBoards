@@ -18,7 +18,11 @@
     <Routes />
     <script src="_framework/blazor.web.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-
+    <script>
+        window.prefersDarkMode = function(){
+            return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+    </script>
 </body>
 
 </html>
