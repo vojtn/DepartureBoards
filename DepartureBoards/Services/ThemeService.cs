@@ -29,22 +29,32 @@ namespace DepartureBoards.Services
         public ThemeService(ICookieService CookieService, IJSRuntime JSRuntime)
         {
             cookieService = CookieService;
-            jsRuntime = JSRuntime;
+            //jsRuntime = JSRuntime;
         }
         /// <summary>
         /// Gets darkmode setting from cookie
         /// If there the cookies is not set, it takes the system settings for darkmode
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> GetDarkModeAsync()
+        public async Task<bool?> GetDarkModeAsync()
         {
             /// default OS setting
             var cookie = await cookieService.GetAsync(DarkModeCookie);
             if (cookie is null)
             {
-                return await jsRuntime.InvokeAsync<bool>("prefersDarkMode");
+                return false;
             }
             return bool.TryParse(cookie.Value, out var result) && result;
+        }
+        public async Task<Cookie?> GetDarkModeCookieAsync()
+        {
+            /// default OS setting
+            return await cookieService.GetAsync(DarkModeCookie);
+            //if (cookie is null)
+            //{
+            //    return system
+            //}
+            //return bool.TryParse(cookie.Value, out var result) && result;
         }
         /// <summary>
         /// Set darkmode setting in a cookie
