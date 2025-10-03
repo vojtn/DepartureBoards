@@ -11,3 +11,12 @@
 /DepartureBoards/.vs/ProjectEvaluation/departureboards.strings.v9.bin
 /DepartureBoards/appsettings.Development.json
 /DepartureBoards/appsettings.json
+/DepartureBoards/Migrations/20251002161257_keyupdate.cs
+/DepartureBoards/Migrations/20251002161257_keyupdate.Designer.cs
+/DepartureBoards/Migrations/AppDbContextModelSnapshot.cs
+/DepartureBoards/Properties/ServiceDependencies/DepartureBoards - Web Deploy/profile.arm.json
+/DepartureBoards/Properties/ServiceDependencies/DepartureBoards - Web Deploy1/profile.arm.json
+/DepartureBoards/Properties/ServiceDependencies/local/mssql1.arm.json
+/DepartureBoards/Properties/serviceDependencies.json
+/DepartureBoards/Properties/serviceDependencies.local.json
+/DepartureBoards/Properties/serviceDependencies.local.json.user

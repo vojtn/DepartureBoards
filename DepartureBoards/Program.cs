@@ -27,6 +27,9 @@ namespace DepartureBoards
             builder.Services.AddSingleton<DataHandler, FileHandler>();
             builder.Services.AddSingleton<ApiHandler>();
 
+            // Setup database
+            builder.Services.AddScoped<UserService>();
+
             // Support cookies
             builder.AddBlazorCookies();
 
