@@ -23,27 +23,41 @@
     <MudItem xs="12" sm="10" md="8" lg="6" xxl="6">
         <MudCard Class="p-0" Elevation="0">
             <MudCardContent Class="py-5">
-                @if(boards.Count == 0)
+                @if (BoardItems.Count == 0)
                 {
                     <MudText Typo="Typo.body1">
                         @Localizer["NoBoardMessage"]
                     </MudText>
                 }
-                @foreach(var board in boards) {
-                    if (board.Key.Platforms.Count == 0) {
+                @foreach (var item in BoardItems)
+                {
+                    if (item.Board.Platforms.Count == 0)
+                    {
                         <div class="board pa-0">
-                            <MudBoard Departures=@board.Value StopName=@board.Key.Name OnDelete="@RemoveBoard" OnEdit="@EditBoard"/>
+                            <MudBoard Departures=@item.Departures
+                            StopName=@item.Board.Name
+                            OnDelete="() => RemoveBoard(item)"
+                            OnEdit="() => ToEditBoard(item.Board)"
+                            OnUp="() => MoveBoardUp(item.Board)"
+                            OnDown="() => MoveBoardDown(item.Board)" />
                         </div>
                     }
-                    else {
-                        var grouped = board.Value.GroupBy(departure => departure.Stop.PlatformCode);
-                        foreach (var group in grouped)
+                    else
                         {
-                            if(board.Key.Platforms.Contains(group.Key)){
+                        foreach (var group in item.Departures.GroupBy(departure => departure.Stop.PlatformCode))
+                        {
+                            if (item.Board.Platforms.Contains(group.Key))
+                            {
                                 <div class="board p-0">
-                                    <MudBoard Departures=@group StopName=@board.Key.Name PlatformCode=@group.Key OnDelete="@RemoveBoard" OnEdit="@EditBoard"></MudBoard>
+                                    <MudBoard Departures=@group
+                                    StopName=@item.Board.Name
+                                    PlatformCode=@group.Key
+                                    OnDelete="() => RemoveBoard(item)"
+                                    OnEdit="() => ToEditBoard(item.Board)"
+                                    OnUp="() => MoveBoardUp(item.Board)"
+                                    OnDown="() => MoveBoardDown(item.Board)" />
                                 </div>
-                                @* <br> *@
+                                <br>
                             }
                         }
                     }
@@ -65,35 +79,42 @@
     public string? Username { get; set; }
 
     private Timer? refreshTimer;
-    Dictionary<StopInfo, List<Departure>> boards = new();
-
-    protected override void OnInitialized()
+    private User? user;
+    private List<BoardViewModel> BoardItems = new();
+    protected override async Task OnInitializedAsync()
     {
         if(Username is null) {
             navigationManager.NavigateTo("/home");
+            return;
         }
+        user = await UserService.GetUserAsync(Username!);
+
         refreshTimer = new Timer(RefreshData, null, 0, 15000);
+
     }
     /// <summary>
     /// Reshuffles the data every 30 seconds.
+    /// Loads realtime data from API for every board
     /// </summary>
     /// <param name="state"></param>
     private async void RefreshData(object? state)
     {
-        if (Username is null) return;
+        if (user is null || user.Boards is null)
+            return;
 
-        User? user = DataHandler.GetUser(Username!);
-        if (user is not null && user.Favorites is not null)
+        user.Boards = user.Boards.OrderBy(board => board.Order).ToList();
+        BoardItems.Clear();
+        foreach (var board in user.Boards)
         {
-            /// For each favorite stop, get the departure board and add it to the dictionary.
-            var updatedBoards = new Dictionary<StopInfo, List<Departure>>();
-            foreach (var stop in user.Favorites)
+            List<Departure>? departures = await ApiHandler.GetDepartureBoard(board.Name);
+            if(departures is not null)
             {
-                List<Departure>? departures = await ApiHandler.GetDepartureBoard(stop.Name);
-                if (departures is not null)
-                    updatedBoards.Add(stop, departures);
+                BoardItems.Add(new BoardViewModel()
+                    {
+                        Board = board,
+                        Departures = departures
+                    });
             }
-            boards = updatedBoards;
         }
         await InvokeAsync(StateHasChanged);
     }
@@ -108,21 +129,30 @@
     /// Handles removing a board
     /// </summary>
     /// <param name="stopName"></param>
-    public void RemoveBoard(string stopName)
+    public void RemoveBoard(BoardViewModel viewModel)
     {
-        var keyToRemove = boards.Keys.FirstOrDefault(k => k.Name == stopName);
-        if (keyToRemove != null)
+        BoardItems.Remove(viewModel);
+        var index = viewModel.Board.Order;
+        foreach (var board in user.Boards)
         {
-            boards.Remove(keyToRemove);
+            if (board.Order > index)
+        {
+                board.Order -= 1;
+            }
         }
-        DataHandler.DeleteBoard(Username!, stopName);
+        user.Boards.Remove(viewModel.Board);
+        UserService.UpdateUser(user);
         StateHasChanged();
     }
     /// <summary>
-    /// 
+    /// Redirects to the edit page for the board
     /// </summary>
     /// <param name="stopName"></param>
-    public void EditBoard(string stopName)
+    public void ToEditBoard(Board board)
+    {
+        navigationManager.NavigateTo($"/edit/{board.Id}");
+    }
+
     {
         navigationManager.NavigateTo($"/add/{Username}/{stopName}");
     }
