@@ -6,13 +6,13 @@
 
 @using MudBlazor
 @using Data
+@using static DepartureBoards.Components.Component.MudBoard
 
 @page "/{Username?}"
 
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject NavigationManager navigationManager
 @inject IStringLocalizer<Resource> Localizer
-@inject DataHandler DataHandler
 @inject ApiHandler ApiHandler
 @inject UserService UserService
 
@@ -44,7 +44,7 @@
                         </div>
                     }
                     else
-                        {
+                    {
                         foreach (var group in item.Departures.GroupBy(departure => departure.Stop.PlatformCode))
                         {
                             if (item.Board.Platforms.Contains(group.Key))
@@ -62,7 +62,6 @@
                             }
                         }
                     }
-                    <br>
                 }
                 <br>
                 <MudButton OnClick="AddNewBoard"
@@ -73,11 +72,11 @@
                 </MudButton>
                 <br>
                 <br>
-                <MudButton 
+                <MudButton
                 OnClick="() => DeleteUser(Username)"
-                    Variant="Variant.Outlined"
-                    Color="Color.Primary"
-                    FullWidth="true">
+                Variant="Variant.Outlined"
+                Color="Color.Primary"
+                FullWidth="true">
                     @Localizer["DeleteMyAccount"]
                 </MudButton>
             </MudCardContent>
@@ -146,7 +145,7 @@
         foreach (var board in user.Boards)
         {
             if (board.Order > index)
-        {
+            {
                 board.Order -= 1;
             }
         }
@@ -173,5 +172,38 @@
         await UserService.DeleteUserAsync(username);
         navigationManager.NavigateTo("/home");
     }
+
+    private async Task MoveBoardUp(Board board)
+    {
+        var index = BoardItems.FindIndex(x => x.Board == board);
+        if (index > 0)
+        {
+            // Swap with the previous
+            var prev = BoardItems[index - 1];
+
+            (board.Order, prev.Board.Order) = (prev.Board.Order, board.Order);
+
+            // Re-sort by order
+            BoardItems = BoardItems.OrderBy(x => x.Board.Order).ToList();
+            //user.Boards = user.Boards.OrderBy(x => x.Order).ToList();
+
+            await UserService.UpdateUser(user);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task MoveBoardDown(Board board)
+    {
+        var index = BoardItems.FindIndex(x => x.Board == board);
+        if (index < BoardItems.Count - 1)
+        {
+            var next = BoardItems[index + 1];
+            (board.Order, next.Board.Order) = (next.Board.Order, board.Order);
+
+            BoardItems = BoardItems.OrderBy(x => x.Board.Order).ToList();
+
+            await UserService.UpdateUser(user);
+            await InvokeAsync(StateHasChanged);
+        }
     }
 }

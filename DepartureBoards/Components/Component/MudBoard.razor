@@ -1,5 +1,4 @@
-﻿@using DepartureBoards.Data
-@using MudBlazor
+﻿@using MudBlazor
 @inject IStringLocalizer<Resource> Localizer
 <style>
     .my-column-limit {
@@ -12,14 +11,14 @@
 
 <div style="overflow-x: auto;">
     <MudDataGrid Items="Departures"
-    Dense="true"
-    Striped="true"
-    Bordered="true"
-    Elevation="0"
-    Square="true"
-    Outlined="true"
-    SortMode="SortMode.Single"
-    Breakpoint="Breakpoint.None">
+                 Dense="true"
+                 Striped="true"
+                 Bordered="true"
+                 Elevation="0"
+                 Square="true"
+                 Outlined="true"
+                 SortMode="SortMode.Single"
+                 Breakpoint="Breakpoint.None">
         @*     <ToolBarContent>
             <MudText>@StopName</MudText>
         </ToolBarContent> *@
@@ -31,15 +30,22 @@
                 <MudText Typo="Typo.h6">@StopName - @* @Localizer["Platform"] *@ @PlatformCode</MudText>
             }
             <MudSpacer />
-            <MudIconButton Icon="@Icons.Material.Filled.Edit"
-            Color="Color.Primary"
-            Size="Size.Small"
-            OnClick="OnEditClicked" />
-            <MudIconButton Icon="@Icons.Material.Filled.Delete"
-            Color="Color.Error"
-            Size="Size.Small"
-            OnClick="OnDeleteClicked"/>
-
+            <MudButtonGroup Variant="Variant.Outlined" Size="Size.Small" Class="px-2">
+                <MudIconButton Icon=@Icons.Material.Filled.KeyboardArrowDown 
+                               OnClick="OnDownClicked"/>
+                <MudIconButton Icon=@Icons.Material.Filled.KeyboardArrowUp 
+                               OnClick="OnUpClicked"/>
+            </MudButtonGroup>
+            <MudButtonGroup Variant="Variant.Outlined" Size="Size.Small">
+                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               Color="Color.Primary"
+                               Size="Size.Small"
+                               OnClick="OnEditClicked" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               Size="Size.Small"
+                               OnClick="OnDeleteClicked" />
+            </MudButtonGroup>
         </ToolBarContent>
         <Columns>
             @if (PlatformCode is null)
@@ -73,6 +79,10 @@
     public EventCallback<string> OnDelete { get; set; }
     [Parameter]
     public EventCallback<string> OnEdit { get; set; }
+    [Parameter]
+    public EventCallback OnUp { get; set; }
+    [Parameter]
+    public EventCallback OnDown { get; set; }
 
     /// <summary>
     /// Deletes the board from database
@@ -95,6 +105,23 @@
             OnEdit.InvokeAsync(StopName);
         }
     }
+
+    public void OnUpClicked()
+    {
+        if (OnUp.HasDelegate)
+        {
+            OnUp.InvokeAsync();
+        }
+    }
+
+    public void OnDownClicked()
+    {
+        if (OnDown.HasDelegate)
+        {
+            OnDown.InvokeAsync();
+        }
+    }
+
     public class BoardViewModel
     {
         public Board Board { get; set; } = new();
