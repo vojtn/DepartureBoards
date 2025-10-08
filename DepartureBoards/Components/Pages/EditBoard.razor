@@ -1,0 +1,52 @@
+﻿@page "/edit/{BoardId:int}"
+
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject NavigationManager navigationManager
+@inject IStringLocalizer<Resource> Localizer
+@inject UserService UserService
+
+<MudPopoverProvider />
+
+<style>
+    .center-form {
+    display: flex; /* Enables Flexbox */
+    align-items: center; /* Centers content vertically */
+    height: 80vh; /* Full viewport height */
+    }
+
+    .center {
+    display: flex;
+    justify-content: center;
+    }
+
+</style>
+
+<MudGrid Justify="Justify.Center" Class="center-form">
+    <MudItem xs="12" sm="6" md="6" lg="4" xxl="2">
+        <BoardForm Board="board" OnSubmit="HandleConfirm" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public int BoardId { get; set; }
+    private Board? board;
+
+    protected override async Task OnInitializedAsync()
+    {
+        board = await UserService.GetBoardAsync(BoardId);
+        if (board is null)
+        {
+            navigationManager.NavigateTo("/home");
+        }
+    }
+
+    /// <summary>
+    /// Handles confirmation of the input form
+    /// </summary>
+    private async Task HandleConfirm()
+    {
+        await UserService.UpdateBoardAsync(board!);
+        navigationManager.NavigateTo($"/{board!.User.Name}");
+    }
+}

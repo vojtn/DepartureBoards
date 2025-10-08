@@ -1,0 +1,186 @@
+﻿@inject IStringLocalizer<Resource> Localizer
+@inject ApiHandler apiHandler
+
+
+<MudCard Class="pa-5" Elevation="0">
+    <MudCardContent>
+        <MudText Typo="Typo.h5">
+            @Localizer["SelectFavoriteStop"]
+        </MudText>
+        @if (loading)
+        {
+            <div class="center">
+                <MudProgressLinear Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+            </div>
+        }
+        else
+        {
+            <MudAutocomplete T="Group"
+                             Label="@Localizer["Stop"]"
+                             @bind-Value="selectedGroup"
+                             SearchFunc="SearchStopGroups"
+                             ToStringFunc="s => s == null ? string.Empty : s.ToString()"
+                             Clearable="true"
+                             Dense="true"
+                             DebounceInterval="200"
+                             MinCharacters="0"
+                             MaxItems="20"
+                             Variant="Variant.Outlined"
+                             ShowProgressIndicator="true"
+                             ProgressIndicatorColor="Color.Default"
+                             Required="true"
+                             RequiredError="@Localizer["RequiredField"]" />
+            @if (selectedGroup is not null)
+            {
+                <br>
+                <div class="center">
+                    <MudSwitch @bind-Value="platformSwitch"
+                    Color="Color.Primary"
+                    Label="@Localizer["SelectPlatforms"]" />
+                </div>
+
+                @if (platformSwitch)
+                {
+                    @* SelectedValues="selectedPlatforms" *@
+                    @*                     SelectedValuesChanged="OnPlatformsChanged"
+                    *@
+                    <br>
+                    @* <MudSelect T="string"
+
+                    MultiSelection="true"
+                               @bind-SelectedValues="selectedPlatforms"
+                               @key="selectedGroup.Name"
+                                       Clearable="true"
+                    Dense="true"
+                    Label="@Localizer["Platform"]"
+                    Variant="Variant.Outlined">
+                        @foreach (var stop in selectedGroup.Stops)
+                        {
+                            <MudSelectItem T="string"
+                                           Value="@Uri.EscapeDataString(stop.Platform)"
+
+                                           @key="selectedGroup.Name+stop.Platform">
+                                @stop.Platform
+                            </MudSelectItem>
+                        }
+                    </MudSelect> *@
+                    <MudSelect T="string"
+                        MultiSelection="true"
+                               @bind-SelectedValues="selectedPlatforms"
+                               Dense="true"
+                               Label="@Localizer["Platform"]"
+                               Variant="Variant.Outlined">
+                        @foreach (var stop in selectedGroup.Stops)
+                        {
+                            <MudSelectItem T="string" Value="stop.Platform">
+                                @stop.Platform
+                            </MudSelectItem>                
+                        }
+                    </MudSelect>
+                }
+            }
+        }
+        <br>
+        <MudButton OnClick="OnConfirm"
+        Variant="Variant.Outlined"
+        FullWidth="true">
+            @Localizer["Confirm"]
+        </MudButton>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter]
+    public Board board { get; set; } = new();
+    [Parameter]
+    public Group? selectedGroup { get; set; } = null;
+    [Parameter]
+    public EventCallback OnSubmit { get; set; }
+
+    private IEnumerable<string> selectedPlatforms = new HashSet<string>();
+    private bool loading = true;
+    private bool platformSwitch = false;
+    public Stops? stops = new(); //
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            stops = await apiHandler.GetStopsAsync();
+            // Preselect group if editing existing board
+            if (board is not null)
+            {
+                selectedGroup = stops.Groups.FirstOrDefault(group =>
+                    string.Equals(group.Name, board.Name, StringComparison.OrdinalIgnoreCase));
+                // Preselect platforms if any
+                if(board.Platforms.Any())
+                {
+                    platformSwitch = true;
+                    selectedPlatforms = board.Platforms;
+                }
+            }
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+    /// <summary>
+    /// Searches stop groups based on the input value.
+    /// </summary>
+    /// <param name="value">The search input value.</param>
+    /// <param name="token">The cancellation token.</param>
+    /// <returns>An IEnumerable of matching groups.</returns>
+    private Task<IEnumerable<Group?>> SearchStopGroups(string value, CancellationToken token)
+    {
+        // empty input
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult<IEnumerable<Group?>>(stops!.Groups.Take(20));
+
+        var normalizedInput = RemoveDiacritics(value).ToLowerInvariant();
+        var result = stops!.Groups
+            .Where(x => RemoveDiacritics(x.Name)
+            .ToLowerInvariant()
+            .Contains(normalizedInput))
+            .OrderByDescending(x => RemoveDiacritics(x.Name).StartsWith(normalizedInput)).ThenBy(x => x.Name.Contains(normalizedInput))
+            .Take(20);
+
+        return Task.FromResult<IEnumerable<Group?>>(result);
+    }
+    /// Remove diactitics for better autocomplete
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    private static string RemoveDiacritics(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return text;
+
+        var normalized = text.Normalize(NormalizationForm.FormD);
+        var builder = new StringBuilder();
+
+        foreach (var ch in normalized)
+        {
+            var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(ch);
+            if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+            {
+                builder.Append(ch);
+            }
+        }
+        return builder.ToString().Normalize(NormalizationForm.FormC);
+    }
+
+    /// <summary>
+    /// Handles confirmation of the input form
+    /// </summary>
+    private async Task OnConfirm()
+    {
+        board.Name = selectedGroup!.Name;
+        board.Platforms = selectedPlatforms.ToList();
+
+        if (OnSubmit.HasDelegate)
+        {
+            await OnSubmit.InvokeAsync();
+        }
+    }
+}
