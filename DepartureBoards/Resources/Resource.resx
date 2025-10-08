@@ -180,4 +180,10 @@
   <data name="UsernameAlreadyExists" xml:space="preserve">
     <value />
   </data>
+  <data name="CreateSuccessMessage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DeleteMyAccount" xml:space="preserve">
+    <value />
+  </data>
 </root>

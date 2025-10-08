@@ -181,4 +181,10 @@
   <data name="UsernameAlreadyExists" xml:space="preserve">
     <value>Username already exists</value>
   </data>
+  <data name="CreateSuccessMessage" xml:space="preserve">
+    <value>Your account has been succesfully created! You can now edit your favorite boards at </value>
+  </data>
+  <data name="DeleteMyAccount" xml:space="preserve">
+    <value>Delete my account</value>
+  </data>
 </root>

@@ -95,5 +95,10 @@
             OnEdit.InvokeAsync(StopName);
         }
     }
+    public class BoardViewModel
+    {
+        public Board Board { get; set; } = new();
+        public List<Departure> Departures { get; set; } = new();
+    }
 }
  

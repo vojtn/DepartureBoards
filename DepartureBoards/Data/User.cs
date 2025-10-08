@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DepartureBoards.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace DepartureBoards.Data
 {

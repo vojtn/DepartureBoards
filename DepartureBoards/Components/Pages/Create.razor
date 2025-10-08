@@ -3,7 +3,7 @@
 @rendermode InteractiveServer
 @inject NavigationManager navigationManager
 @inject IStringLocalizer<Resource> Localizer
-@inject DataHandler DataHandler
+@inject UserService UserService
 
 <MudPopoverProvider />
 
@@ -41,11 +41,11 @@
         </MudCard>
     </MudItem>
 </MudGrid>
-<MudPopover Open="_open" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter">
+<MudPopover Open="open" AnchorOrigin="Origin.CenterCenter" TransformOrigin="Origin.CenterCenter">
     <MudCard Class="p-5" Elevation="1">
-        <MudText>@Localizer["UsernameAlreadyExists"]</MudText>
+        <MudText>@popoverText</MudText>
         <br />
-        <MudButton OnClick="(() => _open = false)" Color="Color.Error">
+        <MudButton OnClick="ClosePopover" Color="Color.Error">
             @Localizer["Close"]
         </MudButton>
     </MudCard>
@@ -53,24 +53,40 @@
 </MudPopover>
 @code {
     private string? username { get; set; }
-    private bool _open = false;
+    private bool open = false;
+    private string popoverText = String.Empty;
+    private bool isCorrect = false;
     /// <summary>
     /// Tries to create a user with the given username.
     /// If successful, navigates to the user's page.
     /// Otherwise, opens a popover indicating the username already exists.
     /// </summary>
-    private void CreateUser(){
-        if(username is not null) {
-            bool created = DataHandler.TryAddUser(username);
-            if(created){
-                navigationManager.NavigateTo($"/{username}");
-            }
-            else {
-                _open = true;
+    private void CreateUser()
+    {
+        if(username is not null)
+        {
+            if (UserService.Contains(username))
+            {
+                popoverText = Localizer["UsernameAlreadyExists"];
+                open = true;
                 username = String.Empty;
+            }
+            else
+            {
+                UserService.AddUser(new User(username));
+                open = true;
+                isCorrect = true;
+                popoverText = $"{Localizer["CreateSuccessMessage"]} { navigationManager.BaseUri + username }";
             }
         }
     }
-    private void ToggleOpen() => _open = !_open;
-
+    private void ToggleOpen() => open = !open;
+    private void ClosePopover()
+    {
+        open = false;
+        if (isCorrect)
+        {
+            navigationManager.NavigateTo($"/{username}");
+        }
+    }
 }

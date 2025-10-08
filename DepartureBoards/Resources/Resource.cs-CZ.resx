@@ -180,4 +180,10 @@
   <data name="UsernameAlreadyExists" xml:space="preserve">
     <value>Uživatelské jméno je již zabrané!</value>
   </data>
+  <data name="CreateSuccessMessage" xml:space="preserve">
+    <value>Účet byl úspěšně zaevidován! Nyní můžete spravovat své oblíbené označníky na stránce </value>
+  </data>
+  <data name="DeleteMyAccount" xml:space="preserve">
+    <value>Smazat můj účet</value>
+  </data>
 </root>

@@ -67,5 +67,22 @@ namespace DepartureBoards.Data
             await dbContext.SaveChangesAsync();
 
         }
+
+        public async Task<Board?> GetBoardAsync(int? id)
+        {
+            return await dbContext.Boards.FindAsync(id);
+        }
+
+        public void AddBoard(Board board)
+        {
+            dbContext.Boards.Add(board);
+            dbContext.SaveChanges();
+        }
+
+        public async Task UpdateBoardAsync(Board board)
+        {
+            dbContext.Boards.Update(board);
+            await dbContext.SaveChangesAsync();
+        }
     }
 }
