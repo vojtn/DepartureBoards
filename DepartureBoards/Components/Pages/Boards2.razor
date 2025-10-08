@@ -14,9 +14,10 @@
 @inject IStringLocalizer<Resource> Localizer
 @inject DataHandler DataHandler
 @inject ApiHandler ApiHandler
+@inject UserService UserService
 
 <MudPopoverProvider />
-<PageTitle>Boards</PageTitle>
+<PageTitle>@Localizer["Boards"]</PageTitle>
 
 
 <MudGrid Justify="Justify.Center" Class="pt-5"> 
@@ -63,12 +64,21 @@
                     }
                     <br>
                 }
+                <br>
+                <MudButton OnClick="AddNewBoard"
+                Variant="Variant.Outlined"
+                Color="Color.Primary"
+                FullWidth="true">
+                    @Localizer["AddBoard"]
+                </MudButton>
+                <br>
+                <br>
                 <MudButton 
-                    OnClick="AddNewBoard"
+                OnClick="() => DeleteUser(Username)"
                     Variant="Variant.Outlined"
                     Color="Color.Primary"
                     FullWidth="true">
-                    @Localizer["AddBoard"]
+                    @Localizer["DeleteMyAccount"]
                 </MudButton>
             </MudCardContent>
         </MudCard>
@@ -153,7 +163,15 @@
         navigationManager.NavigateTo($"/edit/{board.Id}");
     }
 
+    /// <summary>
+    /// Deletes user from the database and its data
+    /// </summary>
+    /// <param name="username"></param>
+    /// <returns></returns>
+    public async Task DeleteUser(string username)
     {
-        navigationManager.NavigateTo($"/add/{Username}/{stopName}");
+        await UserService.DeleteUserAsync(username);
+        navigationManager.NavigateTo("/home");
+    }
     }
 }
