@@ -140,9 +140,12 @@
         var normalizedInput = RemoveDiacritics(value).ToLowerInvariant();
         var result = stops!.Groups
             .Where(x => RemoveDiacritics(x.Name)
-            .ToLowerInvariant()
-            .Contains(normalizedInput))
-            .OrderByDescending(x => RemoveDiacritics(x.Name).StartsWith(normalizedInput)).ThenBy(x => x.Name.Contains(normalizedInput))
+                .ToLowerInvariant()
+                .Contains(normalizedInput))
+            .OrderByDescending(x => RemoveDiacritics(x.Name)
+                .ToLowerInvariant()
+                .StartsWith(normalizedInput))
+            .ThenBy(g => g.Name)
             .Take(20);
 
         return Task.FromResult<IEnumerable<Group?>>(result);
