@@ -60,7 +60,14 @@
         }
         else
         {
-            board.Order = user.Boards.Max(board => board.Order) + 1;
+            if(user.Boards.Count == 0)
+            {
+                board.Order = 0;
+            }
+            else
+            {
+                board.Order = user.Boards.Max(board => board.Order) + 1;
+            }
             user.Boards.Add(board);
         }
         board.User = user; 
