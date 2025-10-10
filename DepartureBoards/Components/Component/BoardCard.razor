@@ -27,7 +27,7 @@
             @foreach (var group in groupedDepartures)
             {
                 <div class="pa-2">
-                    <SingleBoard Departures="group" PlatformCode="@group.Key"/>
+                    <SingleBoard Departures="group.Take(4)" PlatformCode="@group.Key"/>
                 </div>
             }
         }
@@ -35,7 +35,7 @@
     else // shared board for all platforms
     {
         <div class="pa-2">
-            <SharedBoard Departures="Departures"/>
+            <SharedBoard Departures="Departures.Take(8)"/>
         </div>
     }
 </MudPaper>

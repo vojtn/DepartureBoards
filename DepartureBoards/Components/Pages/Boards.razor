@@ -32,11 +32,11 @@
                 @foreach (var item in BoardItems)
                 {
                     <BoardCard Departures="item.Departures"
-                    Board="item.Board"
-                    OnDelete="() => RemoveBoard(item)"
-                    OnEdit="() => ToEditBoard(item.Board)"
-                    OnUp="() => MoveBoardUp(item.Board)"
-                    OnDown="() => MoveBoardDown(item.Board)"/>
+                        Board="item.Board"
+                        OnDelete="() => RemoveBoard(item)"
+                        OnEdit="() => ToEditBoard(item.Board)"
+                        OnUp="() => MoveBoardUp(item.Board)"
+                        OnDown="() => MoveBoardDown(item.Board)"/>
                 }
                 <br>
                 <MudButton OnClick="AddNewBoard"
@@ -94,7 +94,7 @@
         BoardItems.Clear();
         foreach (var board in user.Boards)
         {
-            List<Departure>? departures = await ApiHandler.GetDepartureBoard(board.Name);
+            List<Departure>? departures = await ApiHandler.GetDepartureBoard(board.Name, 24);
             if(departures is not null)
             {
                 BoardItems.Add(new BoardViewModel()
@@ -138,7 +138,7 @@
     /// <param name="stopName"></param>
     public void ToEditBoard(Board board)
     {
-        navigationManager.NavigateTo($"/edit/{board.Id}");
+        navigationManager.NavigateTo($"/edit/{Username}/{board.Id}");
     }
 
     /// <summary>

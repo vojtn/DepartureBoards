@@ -37,12 +37,7 @@
     protected override async Task OnInitializedAsync()
     {
         user = await UserService.GetUserAsync(Username);
-        if (user is not null)
-        {
-
-
-        }
-        else
+        if (user is null)
         {
             navigationManager.NavigateTo("/home");
         }
