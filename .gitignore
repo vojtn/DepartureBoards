@@ -20,3 +20,5 @@
 /DepartureBoards/Properties/serviceDependencies.json
 /DepartureBoards/Properties/serviceDependencies.local.json
 /DepartureBoards/Properties/serviceDependencies.local.json.user
+/DepartureBoards/Migrations/20251009102759_initial.cs
+/DepartureBoards/Migrations/20251009102759_initial.Designer.cs

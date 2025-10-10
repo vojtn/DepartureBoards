@@ -24,7 +24,6 @@ namespace DepartureBoards
                 .AddCircuitOptions(options => { options.DetailedErrors = true; });
             builder.Services.AddMudServices();
 
-            builder.Services.AddSingleton<DataHandler, FileHandler>();
             builder.Services.AddSingleton<ApiHandler>();
 
             // Setup database

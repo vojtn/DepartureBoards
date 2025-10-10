@@ -186,4 +186,10 @@
   <data name="DeleteMyAccount" xml:space="preserve">
     <value>Smazat můj účet</value>
   </data>
+  <data name="Line" xml:space="preserve">
+    <value>Linka</value>
+  </data>
+  <data name="Direction" xml:space="preserve">
+    <value>Směr</value>
+  </data>
 </root>

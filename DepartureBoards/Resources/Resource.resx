@@ -186,4 +186,10 @@
   <data name="DeleteMyAccount" xml:space="preserve">
     <value />
   </data>
+  <data name="Line" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Direction" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -1,0 +1,155 @@
+﻿@using System;
+@using System.Collections.Generic;
+@using System.Text.Json.Serialization;
+@using System.Text.Json;
+
+@using System.Globalization
+@using MudBlazor
+@using Data
+
+@page "/v1/{username?}"
+
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+
+
+<MudPopoverProvider />
+<PageTitle>Boards</PageTitle>
+
+@* <Board Departures=@data StopName="Malostranske namesti">
+
+</Board>
+<br>
+<Board Departures=@A StopName="Malostranske namesti" PlatformCode="A">
+
+</Board> *@
+
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
+<MudGrid Justify="Justify.Center" Class="center-form"> 
+    <MudItem xs="12" sm="8" md="6" lg="4" xxl="2">
+        <MudCard Class="pa-5" Elevation="0">
+            <MudCardContent>
+                @foreach(var board in boards) {
+                    if (board.Key.Platforms.Count == 0) {
+                        <div class="container">
+                            <OldBoard Departures=@board.Value StopName=@board.Key.Name></OldBoard>
+                        </div>
+
+                    }
+                    else {
+                        var grouped = board.Value.GroupBy(departure => departure.Stop.PlatformCode);
+                        var second = board.Value;
+                        var wtf = second.GroupBy(d => d.Stop.PlatformCode);
+
+                        foreach (var group in grouped)
+                        {
+                            @* IEnumerable<Departure> val = group.SelectMany<IEnumerable<Departure>,string>(values => values);
+                            <Board Departures=@val></Board> *@
+                            //Console.WriteLine(group);
+                            if(board.Key.Platforms.Contains(group.Key)){
+                                <div class="container">
+                                    <OldBoard Departures=@group StopName=@board.Key.Name PlatformCode=@group.Key></OldBoard>
+                                </div>
+                                <br>
+                            }
+                        }
+                    }
+                    <br>
+                }
+
+
+                @* <MudSelect 
+                    @bind-Value="stopName"
+                    Variant="Variant.Outlined">
+                    @if(stops is not null){
+                        @* @foreach(var group in stops.Groups)
+                        {
+                           @*  @foreach(var stop in group.Stops){
+                                <MudSelectItem Value="stop">
+                                    @stop
+                                </MudSelectItem>
+                            } *@
+                            @* <MudSelectItem Value="group.Name">
+                                @group.Name
+                            </MudSelectItem>
+                        } *@ 
+                   @*  @foreach(var stop in stopsNames)
+                    {
+                            <MudSelectItem Value="@stop">
+                                @stop
+                            </MudSelectItem>
+                        }
+                    }
+
+
+                </MudSelect> *@
+                <MudButton 
+                    OnClick="AddNewBoard"
+                    Variant="Variant.Outlined">
+                    AddNewBoard
+                </MudButton>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public string? username { get; set; }
+    List<Departure> data = new();
+    //Board board = new();
+    private Timer? refreshTimer;
+    //public ApiHandler apiHandler = new();
+    //List<List<Departure>> boards = new();
+    Dictionary<StopInfo, List<Departure>> boards = new();
+    public IGrouping<string, Departure> A = null;
+    //public Person pers;
+    private string stopName = String.Empty;
+    private Stops? stops = null;
+    private List<string>? stopsNames = null;
+    protected override async Task OnInitializedAsync()
+    {
+        if(username is null) {
+            navigationManager.NavigateTo("/home");
+        }
+        // Person? user = FileHandler.getUser(username);
+        // if(user is not null && user.Boardsis not null){
+        //     foreach (var stop in user.Favorites)
+        //     {
+        //         List<Departure> departures = await apiHandler.GetDepartureBoard(stop.Name);
+        //         boards.Add(stop, departures);
+                // if(stop.Platforms.Count == 0) {
+                //     // full
+                // }
+                // else {
+                //     //onolcy specifix
+                //     var grouped = dat.Departures.GroupBy(d => d.Stop.PlatformCode);
+                //     A = grouped.FirstOrDefault(group => group.Key == "A");
+                // }
+            //}
+        //}
+        //stops = await apiHandler.GetStopsAsync();
+        //stopsNames = await apiHandler.GetStopNamesAsync();
+
+        //refreshTimer = new Timer(RefreshData, null, 0, 30000);
+    }
+    private async void RefreshData(object? state)
+    {
+        await InvokeAsync(StateHasChanged);
+        if(data is not null) {
+
+        }
+    }
+    private void AddNewBoard()
+    {
+        //apiHandler.GetStopsAsync();
+        navigationManager.NavigateTo($"/boards/add/{username}");
+    }
+}

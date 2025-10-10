@@ -20,16 +20,13 @@
 
   <ItemGroup>
     <Folder Include="Components\Pages\Board\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Components\Pages\Boards2.razor">
+    <Content Update="Components\Pages\Boards.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Content Update="Data\data.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
 
   <ItemGroup>

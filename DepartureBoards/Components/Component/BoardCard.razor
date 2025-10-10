@@ -1,0 +1,111 @@
+﻿
+<MudPaper Elevation="0" Square="true" Outlined="true">
+    <MudToolBar>
+        <MudText Typo="Typo.h6">@Board.Name</MudText>
+        <MudSpacer />
+        <MudButtonGroup Variant="Variant.Outlined" Size="Size.Small" Class="px-2">
+            <MudIconButton Icon=@Icons.Material.Filled.KeyboardArrowDown
+            OnClick="OnDownClicked" />
+            <MudIconButton Icon=@Icons.Material.Filled.KeyboardArrowUp
+            OnClick="OnUpClicked" />
+        </MudButtonGroup>
+        <MudButtonGroup Variant="Variant.Outlined" Size="Size.Small">
+            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+            Color="Color.Primary"
+            Size="Size.Small"
+            OnClick="OnEditClicked" />
+            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+            Color="Color.Error"
+            Size="Size.Small"
+            OnClick="OnDeleteClicked" />
+        </MudButtonGroup>
+    </MudToolBar>
+    @if (Board.Platforms.Any()) // multiple single boards for more platforms
+    {
+        @if (groupedDepartures is not null)
+        {
+            @foreach (var group in groupedDepartures)
+            {
+                <div class="pa-2">
+                    <SingleBoard Departures="group" PlatformCode="@group.Key"/>
+                </div>
+            }
+        }
+    }
+    else // shared board for all platforms
+    {
+        <div class="pa-2">
+            <SharedBoard Departures="Departures"/>
+        </div>
+    }
+</MudPaper>
+@code {
+    [Parameter]
+    public Board Board { get; set; }
+    [Parameter]
+    public List<Departure> Departures { get; set; }
+
+    [Parameter]
+    public EventCallback OnDelete { get; set; }
+    [Parameter]
+    public EventCallback OnEdit { get; set; }
+    [Parameter]
+    public EventCallback OnUp { get; set; }
+    [Parameter]
+    public EventCallback OnDown { get; set; }
+
+    IEnumerable<IGrouping<string, Departure>>? groupedDepartures;
+
+    protected override void OnParametersSet()
+    {
+        if (Board.Platforms.Any())
+        {
+            groupedDepartures = Departures
+                .Where(d => Board.Platforms.Contains(d.Stop.PlatformCode))
+                .OrderBy(d => d.Stop.PlatformCode)
+                .GroupBy(d => d.Stop.PlatformCode);
+        }
+    }
+
+    /// <summary>
+    /// Incokes when delete button is clicked to delete the board
+    /// </summary>
+    /// <returns></returns>
+    public async Task OnDeleteClicked()
+    {
+        if (OnDelete.HasDelegate)
+        {
+            await OnDelete.InvokeAsync();
+        }
+    }
+    /// <summary>
+    /// Invokes when edit button is clicked to edit the board
+    /// </summary>
+    public void OnEditClicked()
+    {
+        if (OnEdit.HasDelegate)
+        {
+            OnEdit.InvokeAsync();
+        }
+    }
+    /// <summary>
+    /// Invokes when up button is clicked to move the board up
+    /// </summary>
+    public void OnUpClicked()
+    {
+        if (OnUp.HasDelegate)
+        {
+            OnUp.InvokeAsync();
+        }
+    }
+    /// <summary>
+    /// Invokes when down button is clicked to move the board down
+    /// </summary>
+    public void OnDownClicked()
+    {
+        if (OnDown.HasDelegate)
+        {
+            OnDown.InvokeAsync();
+        }
+    }
+}

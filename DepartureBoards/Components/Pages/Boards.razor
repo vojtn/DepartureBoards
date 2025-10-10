@@ -3,153 +3,198 @@
 @using System.Text.Json.Serialization;
 @using System.Text.Json;
 
-@using System.Globalization
+
 @using MudBlazor
 @using Data
 
-@page "/{username?}"
+@page "/{Username?}"
 
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject NavigationManager navigationManager
-
+@inject IStringLocalizer<Resource> Localizer
+@inject ApiHandler ApiHandler
+@inject UserService UserService
 
 <MudPopoverProvider />
-<PageTitle>Boards</PageTitle>
+<PageTitle>@Localizer["Boards"]</PageTitle>
 
-@* <Board Departures=@data StopName="Malostranske namesti">
 
-</Board>
-<br>
-<Board Departures=@A StopName="Malostranske namesti" PlatformCode="A">
-
-</Board> *@
-
-<style>
-    .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-</style>
-
-<MudGrid Justify="Justify.Center" Class="center-form"> 
-    <MudItem xs="12" sm="8" md="6" lg="4" xxl="2">
-        <MudCard Class="pa-5" Elevation="0">
-            <MudCardContent>
-                @foreach(var board in boards) {
-                    if (board.Key.Platforms.Count == 0) {
-                        <div class="container">
-                            <Board Departures=@board.Value StopName=@board.Key.Name></Board>
-                        </div>
-
-                    }
-                    else {
-                        var grouped = board.Value.GroupBy(departure => departure.Stop.PlatformCode);
-                        var second = board.Value;
-                        var wtf = second.GroupBy(d => d.Stop.PlatformCode);
-
-                        foreach (var group in grouped)
-                        {
-                            @* IEnumerable<Departure> val = group.SelectMany<IEnumerable<Departure>,string>(values => values);
-                            <Board Departures=@val></Board> *@
-                            //Console.WriteLine(group);
-                            if(board.Key.Platforms.Contains(group.Key)){
-                                <div class="container">
-                                    <Board Departures=@group StopName=@board.Key.Name PlatformCode=@group.Key></Board>
-                                </div>
-                                <br>
-                            }
-                        }
-                    }
-                    <br>
+<MudGrid Justify="Justify.Center" Class="pt-5"> 
+    <MudItem xs="12" sm="10" md="8" lg="6" xxl="6">
+        <MudCard Class="p-0" Elevation="0">
+            <MudCardContent Class="py-5">
+                @if (BoardItems.Count == 0)
+                {
+                    <MudText Typo="Typo.body1">
+                        @Localizer["NoBoardMessage"]
+                    </MudText>
                 }
-
-
-                @* <MudSelect 
-                    @bind-Value="stopName"
-                    Variant="Variant.Outlined">
-                    @if(stops is not null){
-                        @* @foreach(var group in stops.Groups)
-                        {
-                           @*  @foreach(var stop in group.Stops){
-                                <MudSelectItem Value="stop">
-                                    @stop
-                                </MudSelectItem>
-                            } *@
-                            @* <MudSelectItem Value="group.Name">
-                                @group.Name
-                            </MudSelectItem>
-                        } *@ 
-                   @*  @foreach(var stop in stopsNames)
-                    {
-                            <MudSelectItem Value="@stop">
-                                @stop
-                            </MudSelectItem>
-                        }
-                    }
-
-
-                </MudSelect> *@
-                <MudButton 
-                    OnClick="AddNewBoard"
-                    Variant="Variant.Outlined">
-                    AddNewBoard
+                @foreach (var item in BoardItems)
+                {
+                    <BoardCard Departures="item.Departures"
+                    Board="item.Board"
+                    OnDelete="() => RemoveBoard(item)"
+                    OnEdit="() => ToEditBoard(item.Board)"
+                    OnUp="() => MoveBoardUp(item.Board)"
+                    OnDown="() => MoveBoardDown(item.Board)"/>
+                }
+                <br>
+                <MudButton OnClick="AddNewBoard"
+                Variant="Variant.Outlined"
+                Color="Color.Primary"
+                FullWidth="true">
+                    @Localizer["AddBoard"]
+                </MudButton>
+                <br>
+                <br>
+                <MudButton
+                OnClick="() => DeleteUser(Username!)"
+                Variant="Variant.Outlined"
+                Color="Color.Primary"
+                FullWidth="true">
+                    @Localizer["DeleteMyAccount"]
                 </MudButton>
             </MudCardContent>
         </MudCard>
     </MudItem>
 </MudGrid>
-
 @code {
     [Parameter]
-    public string? username { get; set; }
-    List<Departure> data = new();
-    //Board board = new();
+    public string? Username { get; set; }
+
     private Timer? refreshTimer;
-    public ApiHandler apiHandler = new();
-    //List<List<Departure>> boards = new();
-    Dictionary<StopInfo, List<Departure>> boards = new();
-    public IGrouping<string, Departure> A = null;
-    //public Person pers;
-    private string stopName = String.Empty;
-    private Stops? stops = null;
-    private List<string>? stopsNames = null;
+    private User? user;
+    private List<BoardViewModel> BoardItems = new();
     protected override async Task OnInitializedAsync()
     {
-        if(username is null) {
+        if(Username is null) {
             navigationManager.NavigateTo("/home");
+            return;
         }
-        Person? user = FileHandler.getUser(username);
-        if(user is not null && user.Favorites is not null){
-            foreach (var stop in user.Favorites)
-            {
-                List<Departure> departures = await apiHandler.GetDepartureBoard(stop.Name);
-                boards.Add(stop, departures);
-                // if(stop.Platforms.Count == 0) {
-                //     // full
-                // }
-                // else {
-                //     //onolcy specifix
-                //     var grouped = dat.Departures.GroupBy(d => d.Stop.PlatformCode);
-                //     A = grouped.FirstOrDefault(group => group.Key == "A");
-                // }
-            }
+        user = await UserService.GetUserAsync(Username!);
+        if(user is null)
+        {
+            navigationManager.NavigateTo("/home");
+            return;
         }
-        //stops = await apiHandler.GetStopsAsync();
-        //stopsNames = await apiHandler.GetStopNamesAsync();
+        refreshTimer = new Timer(RefreshData, null, 0, 1500000);
 
-        refreshTimer = new Timer(RefreshData, null, 0, 30000);
     }
+    /// <summary>
+    /// Reshuffles the data every 30 seconds.
+    /// Loads realtime data from API for every board
+    /// </summary>
+    /// <param name="state"></param>
     private async void RefreshData(object? state)
     {
-        await InvokeAsync(StateHasChanged);
-        if(data is not null) {
+        if (user is null || user.Boards is null)
+            return;
 
+        user.Boards = user.Boards.OrderBy(board => board.Order).ToList();
+        BoardItems.Clear();
+        foreach (var board in user.Boards)
+        {
+            List<Departure>? departures = await ApiHandler.GetDepartureBoard(board.Name);
+            if(departures is not null)
+            {
+                BoardItems.Add(new BoardViewModel()
+                    {
+                        Board = board,
+                        Departures = departures
+                    });
+            }
         }
+        await InvokeAsync(StateHasChanged);
     }
+    /// <summary>
+    /// Navigates to the add board page.
+    /// </summary>
     private void AddNewBoard()
     {
-        //apiHandler.GetStopsAsync();
-        navigationManager.NavigateTo($"/boards/add/{username}");
+        navigationManager.NavigateTo($"/add/{Username}");
+    }
+    /// <summary>
+    /// Handles removing a board
+    /// </summary>
+    /// <param name="stopName"></param>
+    public async Task RemoveBoard(BoardViewModel viewModel)
+    {
+        BoardItems.Remove(viewModel);
+        var index = viewModel.Board.Order;
+        foreach (var board in user!.Boards!)
+        {
+            if (board.Order > index)
+            {
+                board.Order -= 1;
+            }
+        }
+        user.Boards.Remove(viewModel.Board);
+        await UserService.UpdateUser(user);
+        StateHasChanged();
+    }
+    /// <summary>
+    /// Redirects to the edit page for the board
+    /// </summary>
+    /// <param name="stopName"></param>
+    public void ToEditBoard(Board board)
+    {
+        navigationManager.NavigateTo($"/edit/{board.Id}");
+    }
+
+    /// <summary>
+    /// Deletes user from the database and its data
+    /// </summary>
+    /// <param name="username"></param>
+    /// <returns></returns>
+    public async Task DeleteUser(string username)
+    {
+        await UserService.DeleteUserAsync(username);
+        navigationManager.NavigateTo("/home");
+    }
+    /// <summary>
+    /// Changes the order of the board to move it up in the list
+    /// </summary>
+    /// <param name="board"></param>
+    /// <returns></returns>
+    private async Task MoveBoardUp(Board board)
+    {
+        var index = BoardItems.FindIndex(x => x.Board == board);
+        if (index > 0)
+        {
+            // Swap with the previous
+            var prev = BoardItems[index - 1];
+
+            (board.Order, prev.Board.Order) = (prev.Board.Order, board.Order);
+
+            // Re-sort by order
+            BoardItems = BoardItems.OrderBy(x => x.Board.Order).ToList();
+
+            await UserService.UpdateUser(user!);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+    /// <summary>
+    /// Changes the order of the board to move it down in the list
+    /// </summary>
+    /// <param name="board"></param>
+    /// <returns></returns>
+    private async Task MoveBoardDown(Board board)
+    {
+        var index = BoardItems.FindIndex(x => x.Board == board);
+        if (index < BoardItems.Count - 1)
+        {
+            var next = BoardItems[index + 1];
+            (board.Order, next.Board.Order) = (next.Board.Order, board.Order);
+
+            BoardItems = BoardItems.OrderBy(x => x.Board.Order).ToList();
+
+            await UserService.UpdateUser(user!);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+    public class BoardViewModel
+    {
+        public Board Board { get; set; } = new();
+        public List<Departure> Departures { get; set; } = new();
     }
 }
