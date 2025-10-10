@@ -1,4 +1,4 @@
-﻿@page "/edit/{BoardId:int}"
+﻿@page "/edit/{Username}/{BoardId:int}"
 
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject NavigationManager navigationManager
@@ -29,6 +29,8 @@
 
 @code {
     [Parameter]
+    public string Username { get; set; } = String.Empty;
+    [Parameter]
     public int BoardId { get; set; }
     private Board? board;
 
@@ -36,6 +38,10 @@
     {
         board = await UserService.GetBoardAsync(BoardId);
         if (board is null)
+        {
+            navigationManager.NavigateTo("/home");
+        }
+        if (board!.User.Name != Username)
         {
             navigationManager.NavigateTo("/home");
         }
