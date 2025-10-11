@@ -31,8 +31,7 @@ namespace DepartureBoards
             // Support cookies
             builder.AddBlazorCookies();
 
-            // cookie for dark mode
-            builder.Services.AddHttpContextAccessor();
+            // Setup ThemeService
             builder.Services.AddScoped<ThemeService>();
 
             // Support localization

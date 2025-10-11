@@ -10,7 +10,6 @@ namespace DepartureBoards.Services
     public class ThemeService
     {
         private readonly ICookieService cookieService;
-        private readonly IJSRuntime jsRuntime;
         private const string DarkModeCookie = "DarkMode";
         public MudTheme Theme { get; set; } = new MudTheme()
         {
@@ -20,44 +19,26 @@ namespace DepartureBoards.Services
             },
             PaletteDark = new PaletteDark()
             {
-                Primary = "#02adadff"//"#008C95",
+                Primary = "#02adadff"//"#1ea3adff",
                 //Primary = Colors.Green.Darken1,
                 //Secondary = Colors.Orange.Default,
                 //Background = Colors.Shades.Black
             }
         };
-        public ThemeService(ICookieService CookieService, IJSRuntime JSRuntime)
+        public ThemeService(ICookieService CookieService)
         {
             cookieService = CookieService;
-            //jsRuntime = JSRuntime;
         }
         /// <summary>
-        /// Gets darkmode setting from cookie
-        /// If there the cookies is not set, it takes the system settings for darkmode
+        /// Gets darkmode cookie
         /// </summary>
         /// <returns></returns>
-        public async Task<bool?> GetDarkModeAsync()
-        {
-            /// default OS setting
-            var cookie = await cookieService.GetAsync(DarkModeCookie);
-            if (cookie is null)
-            {
-                return false;
-            }
-            return bool.TryParse(cookie.Value, out var result) && result;
-        }
         public async Task<Cookie?> GetDarkModeCookieAsync()
         {
-            /// default OS setting
             return await cookieService.GetAsync(DarkModeCookie);
-            //if (cookie is null)
-            //{
-            //    return system
-            //}
-            //return bool.TryParse(cookie.Value, out var result) && result;
         }
         /// <summary>
-        /// Set darkmode setting in a cookie
+        /// Sets darkmode preference in a cookie
         /// </summary>
         /// <param name="isDarkMode"></param>
         /// <returns></returns>
