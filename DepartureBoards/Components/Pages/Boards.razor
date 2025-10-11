@@ -19,24 +19,30 @@
 <PageTitle>@Localizer["Boards"]</PageTitle>
 
 
-<MudGrid Justify="Justify.Center" Class="pt-5"> 
+<MudGrid Justify="Justify.Center" Class="pt-2"> 
     <MudItem xs="12" sm="10" md="8" lg="6" xxl="6">
-        <MudCard Class="p-0" Elevation="0">
-            <MudCardContent Class="py-5">
+        <MudCard Class="py-2" Elevation="0">
+            <MudCardContent Class="p-1">
+                <MudText Typo="Typo.h4" Align="Align.Center">
+                    @Username
+                </MudText>
                 @if (BoardItems.Count == 0)
                 {
-                    <MudText Typo="Typo.body1">
+                    <br>
+                    <MudText Typo="Typo.body1" Align="Align.Center">
                         @Localizer["NoBoardMessage"]
                     </MudText>
                 }
                 @foreach (var item in BoardItems)
                 {
+                    <div class="py-1">
                     <BoardCard Departures="item.Departures"
                         Board="item.Board"
                         OnDelete="() => RemoveBoard(item)"
                         OnEdit="() => ToEditBoard(item.Board)"
                         OnUp="() => MoveBoardUp(item.Board)"
                         OnDown="() => MoveBoardDown(item.Board)"/>
+                    </div>
                 }
                 <br>
                 <MudButton OnClick="AddNewBoard"
@@ -61,6 +67,9 @@
 @code {
     [Parameter]
     public string? Username { get; set; }
+    [CascadingParameter(Name = "Username")]
+    public string? CascadedUsername { get; set; }
+
 
     private Timer? refreshTimer;
     private User? user;
@@ -77,7 +86,8 @@
             navigationManager.NavigateTo("/home");
             return;
         }
-        refreshTimer = new Timer(RefreshData, null, 0, 1500000);
+        CascadedUsername = Username;
+        refreshTimer = new Timer(RefreshData, null, 0, 150000);
 
     }
     /// <summary>

@@ -24,12 +24,14 @@
     {
         @if (groupedDepartures is not null)
         {
-            @foreach (var group in groupedDepartures)
-            {
-                <div class="pa-2">
-                    <SingleBoard Departures="group.Take(4)" PlatformCode="@group.Key"/>
-                </div>
-            }
+            <div class="pb-2">
+                @foreach (var group in groupedDepartures)
+                {
+                    <div class="pt-2 px-2">
+                        <SingleBoard Departures="group.Take(4)" PlatformCode="@group.Key"/>
+                    </div>
+                }
+            </div>
         }
     }
     else // shared board for all platforms
