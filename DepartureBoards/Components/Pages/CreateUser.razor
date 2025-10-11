@@ -31,7 +31,7 @@
                 Margin="Margin.Dense"
                 Required="true"
                 RequiredError="@Localizer["RequiredField"]"/>
-                <MudButton OnClick="CreateUser"
+                <MudButton OnClick="Create"
                 Color="Color.Primary"
                 Variant="Variant.Outlined"
                 FullWidth="true">
@@ -61,7 +61,7 @@
     /// If successful, navigates to the user's page.
     /// Otherwise, opens a popover indicating the username already exists.
     /// </summary>
-    private void CreateUser()
+    private void Create()
     {
         if(username is not null)
         {

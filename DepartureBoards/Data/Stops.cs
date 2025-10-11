@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Xml.Serialization;
-
+    /// <summary>
+    /// Model for stops names and their lines.
+    /// </summary>
     [XmlRoot("stops")]
     public class Stops
     {

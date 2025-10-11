@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DepartureBoards.Data;
+using Microsoft.EntityFrameworkCore;
 
-namespace DepartureBoards.Data
+namespace DepartureBoards.Services
 {
     public interface IUserService
     {

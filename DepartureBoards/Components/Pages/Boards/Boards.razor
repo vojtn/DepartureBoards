@@ -1,18 +1,18 @@
-﻿@using System;
-@using System.Collections.Generic;
-@using System.Text.Json.Serialization;
-@using System.Text.Json;
+﻿@    using System;
+@    using System.Collections.Generic;
+@    using System.Text.Json.Serialization;
+@    using System.Text.Json;
 
 
-@using MudBlazor
-@using Data
+@    using MudBlazor
+@    using Data
 
 @page "/{Username?}"
 
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject NavigationManager navigationManager
 @inject IStringLocalizer<Resource> Localizer
-@inject ApiHandler ApiHandler
+@inject ApiService ApiHandler
 @inject UserService UserService
 
 <MudPopoverProvider />

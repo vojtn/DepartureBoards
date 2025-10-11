@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Components\Pages\Board\**" />
+    <Content Remove="Components\Pages\Board\**" />
+    <EmbeddedResource Remove="Components\Pages\Board\**" />
+    <None Remove="Components\Pages\Board\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BitzArt.Blazor.Cookies.Server" Version="1.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9" />
@@ -19,12 +26,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Pages\Board\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Components\Pages\Boards.razor">
+    <Content Update="Components\Pages\Boards\Boards.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
   </ItemGroup>

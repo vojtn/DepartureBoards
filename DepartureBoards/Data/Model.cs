@@ -2,7 +2,9 @@
 
 namespace DepartureBoards.Data
 {
-
+    /// <summary>
+    /// Model for departure board response from the API.
+    /// </summary>
     public class DepartureBoardResponse
     {
         [JsonPropertyName("stops")]

@@ -1,5 +1,4 @@
 using DepartureBoards.Components;
-using DepartureBoards.Data;
 using DepartureBoards.Services;
 using MudBlazor.Services;
 using System.Globalization;
@@ -24,7 +23,7 @@ namespace DepartureBoards
                 .AddCircuitOptions(options => { options.DetailedErrors = true; });
             builder.Services.AddMudServices();
 
-            builder.Services.AddSingleton<ApiHandler>();
+            builder.Services.AddSingleton<ApiService>();
 
             // Setup database
             builder.Services.AddScoped<UserService>();

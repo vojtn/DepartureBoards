@@ -2,8 +2,9 @@
 using System.Text.Json;
 using System.Xml;
 using System.Xml.Serialization;
+using DepartureBoards.Data;
 
-namespace DepartureBoards.Data
+namespace DepartureBoards.Services
 {
     public class ApiSettings
     {
@@ -20,9 +21,9 @@ namespace DepartureBoards.Data
         public bool IsTrain { get; set; }
         public override string ToString()
         {
-            if(IsTrain)
+            if (IsTrain)
                 return $"{Name} (vlak)";
-            else return Name ;
+            else return Name;
         }
     }
 
@@ -32,14 +33,14 @@ namespace DepartureBoards.Data
         public List<StopGroup> StopGroups { get; set; }
     }
 
-    public class ApiHandler
+    public class ApiService
     {
         public HttpClient httpClient = new();
-        private string? BoardsUrl { get; set; } = String.Empty;
-        private string? StopsUrl { get; set; } = String.Empty;
-        private string? AccessToken { get; set; } = String.Empty;
+        private string? BoardsUrl { get; set; } = string.Empty;
+        private string? StopsUrl { get; set; } = string.Empty;
+        private string? AccessToken { get; set; } = string.Empty;
 
-        public ApiHandler(IConfiguration configuration)
+        public ApiService(IConfiguration configuration)
         {
             BoardsUrl = configuration["ApiSettings:BoardsUrl"];
             StopsUrl = configuration["ApiSettings:StopsUrl"];
