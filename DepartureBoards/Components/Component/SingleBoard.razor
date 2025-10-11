@@ -12,11 +12,23 @@
                  Breakpoint="Breakpoint.None"
                  Class="pa-0">
         <Columns>
+            @* Platform *@
             <PropertyColumn Title="@PlatformCode"
                             Property="departure => departure.Route.ShortName" 
                             Sortable="false"
                             HeaderStyle="width: 30px;"
                             CellStyle="text-align: center; width: 30px;" />
+            @* Direction *@
+            <PropertyColumn Title="@Localizer["Direction"]"
+                            Property="departure => departure.Trip.Headsign" 
+                            Sortable="false"/>
+            @* Minutes *@
+            <PropertyColumn Title="@Localizer["Min"]" 
+                            Property="departure => departure.DepartureTimestamp.Minutes" 
+                            Sortable="false"
+                            HeaderStyle="width: 25px;"
+                            CellStyle="text-align: center; width: 25px;" />
+            @* Vehicle properties *@
             <TemplateColumn HeaderStyle="width: 90px;"
                             CellStyle="text-align: center; width: 90px;">
                 <CellTemplate>
@@ -30,15 +42,6 @@
                     }
                 </CellTemplate>
             </TemplateColumn>
-            <PropertyColumn Title="@Localizer["Direction"]"
-                            Property="departure => departure.Trip.Headsign" 
-                            Sortable="false"/>
-            
-            <PropertyColumn Title="@Localizer["Min"]" 
-                            Property="departure => departure.DepartureTimestamp.Minutes" 
-                            Sortable="false"
-                            HeaderStyle="width: 25px;"
-                            CellStyle="text-align: center; width: 25px;" />
         </Columns>
     </MudDataGrid>
 </div>

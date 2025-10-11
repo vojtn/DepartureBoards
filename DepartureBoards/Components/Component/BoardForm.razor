@@ -41,35 +41,14 @@
 
                 @if (platformSwitch)
                 {
-                    @* SelectedValues="selectedPlatforms" *@
-                    @*                     SelectedValuesChanged="OnPlatformsChanged"
-                    *@
-                    <br>
-                    @* <MudSelect T="string"
-
-                    MultiSelection="true"
-                               @bind-SelectedValues="selectedPlatforms"
-                               @key="selectedGroup.Name"
-                                       Clearable="true"
-                    Dense="true"
-                    Label="@Localizer["Platform"]"
-                    Variant="Variant.Outlined">
-                        @foreach (var stop in selectedGroup.Stops)
-                        {
-                            <MudSelectItem T="string"
-                                           Value="@Uri.EscapeDataString(stop.Platform)"
-
-                                           @key="selectedGroup.Name+stop.Platform">
-                                @stop.Platform
-                            </MudSelectItem>
-                        }
-                    </MudSelect> *@
                     <MudSelect T="string"
                         MultiSelection="true"
                                @bind-SelectedValues="selectedPlatforms"
                                Dense="true"
                                Label="@Localizer["Platform"]"
-                               Variant="Variant.Outlined">
+                               Variant="Variant.Outlined"
+                               AnchorOrigin="Origin.CenterCenter"
+                               TransformOrigin="Origin.CenterCenter">
                         @foreach (var stop in selectedGroup.Stops)
                         {
                             <MudSelectItem T="string" Value="stop.Platform">
@@ -100,7 +79,7 @@
     private IEnumerable<string> selectedPlatforms = new HashSet<string>();
     private bool loading = true;
     private bool platformSwitch = false;
-    public Stops? stops = new(); //
+    public Stops? stops = new();
 
     protected override async Task OnInitializedAsync()
     {
