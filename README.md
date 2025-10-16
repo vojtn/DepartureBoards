@@ -10,6 +10,10 @@ I created this app because the PID Lítačka app doesn't offer an easy way to vi
 
 ![](/docs/oznacnik.jpeg)
 
+
+![](/docs/page.png)
+
+
 ## Utilization of AddToHomeScreen functionality
 
 Google Chrome web browser includes a feature, which allows users to create a shortcut for some webpage and this fact can be very useful, cause it will add Icon to the home screen and it will behave like an app
